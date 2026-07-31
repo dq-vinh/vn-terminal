@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-terminal.local/contracts/0.1.0/money_flow_block.schema.json",
+  "title": "MoneyFlowBlock",
+  "additionalProperties": false,
+  "properties": {
+    "accumulation_distribution_line": {
+      "description": "Section 14: accumulation/distribution line, latest value.",
+      "title": "Accumulation Distribution Line",
+      "type": "number"
+    },
+    "on_balance_volume": {
+      "description": "Section 14: on-balance volume, latest value.",
+      "title": "On Balance Volume",
+      "type": "number"
+    },
+    "up_down_volume_ratio": {
+      "description": "Section 14: up-day versus down-day volume ratio.",
+      "title": "Up Down Volume Ratio",
+      "type": "number"
+    },
+    "volume_at_price_concentration": {
+      "additionalProperties": true,
+      "description": "OPEN ITEM: Section 14 names 'volume-at-price concentration' as a member of this block but does not define its shape (for example a price-to-volume histogram, or a single concentration score). Typed as an open object. See contracts/OPEN_ITEMS.md.",
+      "title": "Volume At Price Concentration",
+      "type": "object"
+    },
+    "unusual_volume_flags": {
+      "description": "Section 14: 'unusual-volume flags' (plural). Modeled as a list of ISO dates on which unusual volume was flagged. OPEN ITEM: the plan does not define the detection threshold or the exact record shape. See contracts/OPEN_ITEMS.md.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Unusual Volume Flags",
+      "type": "array"
+    },
+    "close_vs_vwap": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Section 14: 'Once Aux1 is confirmed as unadjusted VWAP, close-versus-VWAP positioning joins this block.' Null until WP1's Aux1 confirmation task (Section 19.1, WP1 acceptance criteria) concludes. Do not populate before that confirmation is recorded in docs/data_dictionary.md.",
+      "title": "Close Vs Vwap"
+    }
+  },
+  "required": [
+    "accumulation_distribution_line",
+    "on_balance_volume",
+    "up_down_volume_ratio",
+    "volume_at_price_concentration"
+  ],
+  "type": "object"
+}

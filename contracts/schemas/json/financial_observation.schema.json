@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-terminal.local/contracts/0.1.0/financial_observation.schema.json",
+  "title": "FinancialObservation",
+  "$defs": {
+    "PeriodType": {
+      "description": "Section 10.3: \"period_type, quarter or year.",
+      "enum": [
+        "quarter",
+        "year"
+      ],
+      "title": "PeriodType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "symbol": {
+      "title": "Symbol",
+      "type": "string"
+    },
+    "period_end": {
+      "format": "date",
+      "title": "Period End",
+      "type": "string"
+    },
+    "period_type": {
+      "$ref": "#/$defs/PeriodType"
+    },
+    "statement_type": {
+      "description": "OPEN ITEM: Section 10.3 names the field but does not enumerate statement types. Examples given here follow standard financial-statement categories implied by Section 17 ('Financial statements') but are not a plan-given closed list. See contracts/OPEN_ITEMS.md.",
+      "examples": [
+        "income_statement",
+        "balance_sheet",
+        "cash_flow_statement"
+      ],
+      "title": "Statement Type",
+      "type": "string"
+    },
+    "metric_code": {
+      "title": "Metric Code",
+      "type": "string"
+    },
+    "metric_label_vi": {
+      "title": "Metric Label Vi",
+      "type": "string"
+    },
+    "value": {
+      "title": "Value",
+      "type": "number"
+    },
+    "currency": {
+      "examples": [
+        "VND"
+      ],
+      "title": "Currency",
+      "type": "string"
+    },
+    "unit": {
+      "description": "OPEN ITEM: Section 17 requires recording 'currency and units' but the plan does not give a unit vocabulary (for example whether values are in VND, thousand VND, or million VND). See contracts/OPEN_ITEMS.md.",
+      "title": "Unit",
+      "type": "string"
+    },
+    "consolidated": {
+      "description": "Section 17: 'Distinguish consolidated and separate statements.'",
+      "title": "Consolidated",
+      "type": "boolean"
+    },
+    "restatement_version": {
+      "description": "OPEN ITEM: Section 10.3 names 'restatement_version' and Section 17 requires 'Preserve restatements' but the plan does not say whether this is an incrementing integer or a string tag. Modeled as an integer counter starting at 1 in this session. See contracts/OPEN_ITEMS.md.",
+      "minimum": 1,
+      "title": "Restatement Version",
+      "type": "integer"
+    },
+    "publication_date": {
+      "anyOf": [
+        {
+          "format": "date",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Section 17 degraded mode: nullable. When null, this observation must be excluded from historical backtests (Section 16: 'No use of later financial-publication information... affected fundamental inputs are excluded from backtests rather than assumed') and must carry an explicit warning at the point of use.",
+      "title": "Publication Date"
+    },
+    "source_url": {
+      "title": "Source Url",
+      "type": "string"
+    },
+    "ingested_at": {
+      "format": "date-time",
+      "title": "Ingested At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "symbol",
+    "period_end",
+    "period_type",
+    "statement_type",
+    "metric_code",
+    "metric_label_vi",
+    "value",
+    "currency",
+    "unit",
+    "consolidated",
+    "restatement_version",
+    "source_url",
+    "ingested_at"
+  ],
+  "type": "object"
+}

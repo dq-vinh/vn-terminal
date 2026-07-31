@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-terminal.local/contracts/0.1.0/provenance.schema.json",
+  "title": "Provenance",
+  "additionalProperties": false,
+  "description": "Attached to every API response envelope (Section 11, Section 3.4).",
+  "properties": {
+    "as_of_date": {
+      "description": "Section 11: 'as_of_date' required on every endpoint.",
+      "format": "date",
+      "title": "As Of Date",
+      "type": "string"
+    },
+    "data_version": {
+      "description": "Section 11: 'data_version' required on every endpoint. Example form from Section 10.5: 'fdata-2026-07-30'.",
+      "title": "Data Version",
+      "type": "string"
+    },
+    "source": {
+      "description": "Section 11: 'source' required on every endpoint.",
+      "title": "Source",
+      "type": "string"
+    },
+    "freshness_status": {
+      "description": "Section 3.4: 'freshness status'. OPEN ITEM: the plan does not enumerate allowed values. See contracts/OPEN_ITEMS.md.",
+      "title": "Freshness Status",
+      "type": "string"
+    },
+    "warnings": {
+      "description": "Section 11: 'Quality and freshness warnings where applicable.'",
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "required": [
+    "as_of_date",
+    "data_version",
+    "source",
+    "freshness_status"
+  ],
+  "type": "object"
+}

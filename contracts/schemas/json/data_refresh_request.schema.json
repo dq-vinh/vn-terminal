@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-terminal.local/contracts/0.1.0/data_refresh_request.schema.json",
+  "title": "DataRefreshRequest",
+  "additionalProperties": false,
+  "properties": {
+    "force": {
+      "default": false,
+      "description": "OPEN ITEM: not named by the plan. Added so a caller can request a refresh even if one recently succeeded. See contracts/OPEN_ITEMS.md.",
+      "title": "Force",
+      "type": "boolean"
+    }
+  },
+  "type": "object"
+}

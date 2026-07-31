@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-terminal.local/contracts/0.1.0/screen_request.schema.json",
+  "title": "ScreenRequest",
+  "$defs": {
+    "ScreenUniverseFilters": {
+      "additionalProperties": false,
+      "description": "Section 15 'Default filters' list.",
+      "properties": {
+        "active_equity_only": {
+          "default": true,
+          "title": "Active Equity Only",
+          "type": "boolean"
+        },
+        "last_positive_volume_within_days": {
+          "default": 5,
+          "description": "Section 15: 'Last positive-volume date within a configurable range.' OPEN ITEM: the plan does not give a default value; 5 sessions is chosen here to match the terminal zero-volume run length used in Section 19.2's baseline scan ('terminal zero-volume runs of five or more sessions'). See contracts/OPEN_ITEMS.md.",
+          "title": "Last Positive Volume Within Days",
+          "type": "integer"
+        },
+        "min_20d_median_trading_value": {
+          "description": "Section 15: 'Minimum 20-day median trading value.'",
+          "title": "Min 20D Median Trading Value",
+          "type": "number"
+        },
+        "min_history_days": {
+          "description": "Section 15: 'Minimum history length.'",
+          "title": "Min History Days",
+          "type": "integer"
+        },
+        "exclude_unresolved_critical_issues": {
+          "default": true,
+          "description": "Section 15: 'No unresolved critical data-quality issue.'",
+          "title": "Exclude Unresolved Critical Issues",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "min_20d_median_trading_value",
+        "min_history_days"
+      ],
+      "title": "ScreenUniverseFilters",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "strategy_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Strategy Ids",
+      "type": "array"
+    },
+    "universe_filters": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ScreenUniverseFilters"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    }
+  },
+  "required": [
+    "strategy_ids"
+  ],
+  "type": "object"
+}

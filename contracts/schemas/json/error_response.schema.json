@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-terminal.local/contracts/0.1.0/error_response.schema.json",
+  "title": "ErrorResponse",
+  "additionalProperties": false,
+  "description": "Explicit error response (Section 11) for non-validation errors.",
+  "properties": {
+    "error_code": {
+      "description": "OPEN ITEM: the plan requires 'explicit error responses' (Section 11) but does not name an error vocabulary. See contracts/OPEN_ITEMS.md.",
+      "title": "Error Code",
+      "type": "string"
+    },
+    "message": {
+      "title": "Message",
+      "type": "string"
+    },
+    "details": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Details"
+    }
+  },
+  "required": [
+    "error_code",
+    "message"
+  ],
+  "type": "object"
+}

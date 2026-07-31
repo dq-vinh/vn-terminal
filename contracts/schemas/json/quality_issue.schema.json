@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-terminal.local/contracts/0.1.0/quality_issue.schema.json",
+  "title": "QualityIssue",
+  "$defs": {
+    "Severity": {
+      "description": "Section 19.2: \"Severity levels: Critical, High, Medium, Low.",
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low"
+      ],
+      "title": "Severity",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "One data-quality finding, per the checks enumerated in Section 19.2.\n\nOPEN ITEM: the plan lists fourteen automated checks and four severity\nlevels (Section 19.2) but does not give a literal issue-record schema.\nThis shape is this session's proposal for representing one finding; see\ncontracts/OPEN_ITEMS.md.",
+  "properties": {
+    "code": {
+      "description": "Identifier for which of the fourteen Section 19.2 checks produced this issue, for example 'header_count_mismatch' or 'ohlc_violation'. Exact vocabulary is an open item.",
+      "title": "Code",
+      "type": "string"
+    },
+    "severity": {
+      "$ref": "#/$defs/Severity"
+    },
+    "message": {
+      "title": "Message",
+      "type": "string"
+    },
+    "symbol": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Affected symbol, when the issue is symbol-scoped.",
+      "title": "Symbol"
+    },
+    "source_file": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Affected source file path, when applicable (Section 19.2 example: EOD/cw/CSHB2604.dat).",
+      "title": "Source File"
+    }
+  },
+  "required": [
+    "code",
+    "severity",
+    "message"
+  ],
+  "type": "object"
+}

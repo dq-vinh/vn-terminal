@@ -1,0 +1,109 @@
+/* Bottom Workspace Styles */
+.workspace-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.workspace-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+/* Watchlist & Toolbar Grid */
+.watchlist-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 10px;
+}
+
+.watchlist-input-group {
+  display: flex;
+  gap: 6px;
+}
+
+/* Canvas Container for Equity Curve */
+.canvas-chart-container {
+  width: 100%;
+  height: 180px;
+  position: relative;
+  background-color: var(--bg-dark-100);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+}
+
+.canvas-chart-container canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Key Quantitative Metrics Grid */
+.metrics-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.metric-box {
+  background-color: var(--bg-dark-300);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 6px 10px;
+  text-align: center;
+}
+
+.metric-box .label {
+  font-size: 10px;
+  color: var(--text-secondary);
+  margin-bottom: 2px;
+}
+
+.metric-box .val {
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+}
+
+/* Portfolio Notes Editor */
+.notes-editor-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 8px;
+}
+
+.notes-textarea {
+  flex: 1;
+  width: 100%;
+  min-height: 120px;
+  padding: 10px;
+  background-color: var(--bg-dark-100);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  outline: none;
+  resize: vertical;
+}
+
+.notes-textarea:focus {
+  border-color: var(--accent-blue);
+}
+
+/* Data Refresh Log Item */
+.log-item {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border-color-muted);
+  display: flex;
+  justify-content: space-between;
+}

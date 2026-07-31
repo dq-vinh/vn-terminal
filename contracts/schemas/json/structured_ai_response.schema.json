@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-terminal.local/contracts/0.1.0/structured_ai_response.schema.json",
+  "title": "StructuredAIResponse",
+  "$defs": {
+    "AIProviderType": {
+      "description": "Section 18.2 adapters list.",
+      "enum": [
+        "openrouter",
+        "ollama",
+        "openai_compatible"
+      ],
+      "title": "AIProviderType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "summary": {
+      "title": "Summary",
+      "type": "string"
+    },
+    "facts": {
+      "description": "Section 18.3: 'facts.' OPEN ITEM: the plan does not specify whether this is a list of fact-bundle references (ids/paths into the AIFactBundle) or restated fact strings. Modeled as a list of strings. See contracts/OPEN_ITEMS.md.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Facts",
+      "type": "array"
+    },
+    "base_case": {
+      "title": "Base Case",
+      "type": "string"
+    },
+    "bull_case": {
+      "title": "Bull Case",
+      "type": "string"
+    },
+    "bear_case": {
+      "title": "Bear Case",
+      "type": "string"
+    },
+    "conditions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Conditions",
+      "type": "array"
+    },
+    "risks": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Risks",
+      "type": "array"
+    },
+    "invalidation": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Invalidation"
+    },
+    "conflicting_evidence": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Conflicting Evidence",
+      "type": "array"
+    },
+    "confidence": {
+      "description": "Section 18.4: 'Require a confidence level.' OPEN ITEM: the plan does not define the scale (qualitative label such as low/medium/high, or a numeric 0-1 score). Left as an open string. See contracts/OPEN_ITEMS.md.",
+      "title": "Confidence",
+      "type": "string"
+    },
+    "sources": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Sources",
+      "type": "array"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    },
+    "model": {
+      "title": "Model",
+      "type": "string"
+    },
+    "provider": {
+      "$ref": "#/$defs/AIProviderType"
+    },
+    "prompt_version": {
+      "title": "Prompt Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "summary",
+    "facts",
+    "base_case",
+    "bull_case",
+    "bear_case",
+    "conditions",
+    "risks",
+    "invalidation",
+    "confidence",
+    "model",
+    "provider",
+    "prompt_version"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-terminal.local/contracts/0.1.0/strategy_evaluation_result.schema.json",
+  "title": "StrategyEvaluationResult",
+  "$defs": {
+    "Levels": {
+      "additionalProperties": false,
+      "description": "Section 10.5 'levels' object, reused by the AI fact bundle (10.6).",
+      "properties": {
+        "support": {
+          "items": {
+            "type": "number"
+          },
+          "title": "Support",
+          "type": "array"
+        },
+        "resistance": {
+          "items": {
+            "type": "number"
+          },
+          "title": "Resistance",
+          "type": "array"
+        },
+        "invalidation": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Invalidation"
+        }
+      },
+      "title": "Levels",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "symbol": {
+      "examples": [
+        "FPT"
+      ],
+      "title": "Symbol",
+      "type": "string"
+    },
+    "as_of_date": {
+      "format": "date",
+      "title": "As Of Date",
+      "type": "string"
+    },
+    "strategy_id": {
+      "examples": [
+        "minervini_trend_template"
+      ],
+      "title": "Strategy Id",
+      "type": "string"
+    },
+    "strategy_version": {
+      "examples": [
+        "1.0.0"
+      ],
+      "title": "Strategy Version",
+      "type": "string"
+    },
+    "signal": {
+      "description": "OPEN ITEM: only 'watch' is evidenced (Section 10.5 example). The plan does not enumerate the full signal vocabulary (for example whether 'buy', 'sell', 'hold' also exist). See contracts/OPEN_ITEMS.md.",
+      "examples": [
+        "watch"
+      ],
+      "title": "Signal",
+      "type": "string"
+    },
+    "score": {
+      "title": "Score",
+      "type": "integer"
+    },
+    "max_score": {
+      "title": "Max Score",
+      "type": "integer"
+    },
+    "passed_criteria": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Passed Criteria",
+      "type": "array"
+    },
+    "failed_criteria": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Failed Criteria",
+      "type": "array"
+    },
+    "levels": {
+      "$ref": "#/$defs/Levels"
+    },
+    "data_version": {
+      "examples": [
+        "fdata-2026-07-30"
+      ],
+      "title": "Data Version",
+      "type": "string"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "required": [
+    "symbol",
+    "as_of_date",
+    "strategy_id",
+    "strategy_version",
+    "signal",
+    "score",
+    "max_score",
+    "levels",
+    "data_version"
+  ],
+  "type": "object"
+}

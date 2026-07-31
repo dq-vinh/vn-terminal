@@ -1,0 +1,12 @@
+{
+  "as_of_date": "2026-07-30",
+  "content_sha256": "2494bf490f97884a7231000da7e045ee060da99ccbdca955b31a36f5ecdfa8b5",
+  "data_version": "fdata-test",
+  "generated_at": "2026-07-30T22:00:00+00:00",
+  "quarantined_files": [],
+  "record_count": 2,
+  "record_layout": "header-40-byte;record-<I9f-40-byte",
+  "snapshot_format_version": "1.0.0",
+  "source": "Fialda FData",
+  "source_file_count": 1
+}

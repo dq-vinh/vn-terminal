@@ -1,0 +1,126 @@
+/* Chart Workspace Styles */
+.chart-container {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-dark-100);
+}
+
+.chart-canvas-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+/* Legend & Status Overlay */
+.chart-legend {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  z-index: 10;
+  pointer-events: none;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: rgba(13, 17, 23, 0.75);
+  padding: 6px 10px;
+  border-radius: 6px;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(48, 54, 61, 0.5);
+}
+
+.legend-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.legend-title .ticker { color: var(--accent-blue); }
+.legend-title .period { color: var(--text-muted); font-size: 11px; font-weight: 400; }
+
+.legend-values {
+  display: flex;
+  gap: 12px;
+  color: var(--text-secondary);
+}
+
+.legend-values .val { color: var(--text-primary); font-weight: 600; }
+.legend-values .up { color: #26a69a; }
+.legend-values .down { color: #ef5350; }
+
+.legend-indicators {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 2px;
+  font-size: 10px;
+}
+
+.ind-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ind-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+/* TradingView Attribution Banner (Apache 2.0 attribution requirement) */
+.chart-attribution {
+  position: absolute;
+  bottom: 6px;
+  left: 10px;
+  z-index: 10;
+  font-size: 10px;
+  color: var(--text-muted);
+  pointer-events: auto;
+  user-select: none;
+}
+
+.chart-attribution a {
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.chart-attribution a:hover {
+  text-decoration: underline;
+  color: var(--accent-blue);
+}
+
+/* Floating Chart Controls Bar */
+.chart-floating-tools {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  z-index: 10;
+  display: flex;
+  gap: 6px;
+  background: rgba(22, 27, 34, 0.85);
+  padding: 4px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  backdrop-filter: blur(4px);
+}
+
+.chart-tool-btn {
+  padding: 4px 8px;
+  font-size: 11px;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.chart-tool-btn:hover {
+  background-color: var(--bg-dark-300);
+  color: var(--text-primary);
+}

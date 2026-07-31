@@ -1,0 +1,294 @@
+/* VN Terminal Pro - Main CSS Design Tokens & Base Styles */
+:root {
+  --bg-dark-100: #0d1117;
+  --bg-dark-200: #161b22;
+  --bg-dark-300: #21262d;
+  --bg-dark-400: #30363d;
+  --border-color: #30363d;
+  --border-color-muted: #21262d;
+  
+  --text-primary: #f0f6fc;
+  --text-secondary: #8b949e;
+  --text-muted: #6e7681;
+
+  --accent-blue: #2f81f7;
+  --accent-blue-hover: #388bfd;
+  --accent-green: #238636;
+  --accent-green-hover: #2ea043;
+  --accent-red: #da3633;
+  --accent-amber: #d29922;
+  --accent-purple: #a371f7;
+
+  /* AI Category Visual Colors */
+  --cat-fact-bg: rgba(46, 160, 67, 0.1);
+  --cat-fact-border: #2ea043;
+  --cat-fact-text: #56d364;
+
+  --cat-calc-bg: rgba(56, 139, 253, 0.1);
+  --cat-calc-border: #388bfd;
+  --cat-calc-text: #58a6ff;
+
+  --cat-ai-bg: rgba(163, 113, 247, 0.12);
+  --cat-ai-border: #a371f7;
+  --cat-ai-text: #bc8cff;
+  --cat-ai-glow: rgba(163, 113, 247, 0.25);
+
+  --cat-unverified-bg: rgba(210, 153, 34, 0.1);
+  --cat-unverified-border: #d29922;
+  --cat-unverified-text: #e3b341;
+
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-mono: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  min-height: 800px;
+  overflow: hidden;
+  background-color: var(--bg-dark-100);
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-dark-100);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--bg-dark-400);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* App Container Layout */
+#app {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 800px;
+}
+
+/* Main Split View (Chart + Right Panel) */
+.main-view {
+  display: flex;
+  flex: 1;
+  min-height: 400px;
+  height: 100%;
+  overflow: hidden;
+}
+
+.chart-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 400px;
+  height: 100%;
+  border-right: 1px solid var(--border-color);
+  background-color: var(--bg-dark-100);
+}
+
+.right-panel {
+  width: 440px;
+  min-width: 340px;
+  max-width: 550px;
+  height: 100%;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-dark-200);
+  border-left: 1px solid var(--border-color);
+}
+
+/* Bottom Workspace */
+.bottom-workspace {
+  height: 280px;
+  min-height: 220px;
+  max-height: 450px;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-dark-200);
+  border-top: 1px solid var(--border-color);
+}
+
+/* Tab Controls System */
+.tab-header {
+  display: flex;
+  flex-wrap: wrap;
+  background-color: var(--bg-dark-300);
+  border-bottom: 1px solid var(--border-color);
+  user-select: none;
+}
+
+.tab-btn {
+  padding: 7px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tab-btn:hover {
+  color: var(--text-primary);
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.tab-btn.active {
+  color: var(--accent-blue);
+  border-bottom-color: var(--accent-blue);
+  background-color: var(--bg-dark-200);
+  font-weight: 600;
+}
+
+.tab-content {
+  flex: 1;
+  min-height: 350px;
+  height: 100%;
+  overflow-y: auto;
+  padding: 12px;
+  position: relative;
+}
+
+.tab-pane {
+  display: none;
+  width: 100%;
+  min-height: 300px;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+/* Badges & Pills */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.badge-success { background: rgba(35, 134, 54, 0.2); color: #56d364; border: 1px solid #238636; }
+.badge-warning { background: rgba(210, 153, 34, 0.2); color: #e3b341; border: 1px solid #d29922; }
+.badge-danger  { background: rgba(218, 54, 51, 0.2); color: #f85149; border: 1px solid #da3633; }
+.badge-info    { background: rgba(47, 129, 247, 0.2); color: #58a6ff; border: 1px solid #2f81f7; }
+
+/* Standard Button Styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-dark-300);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.btn:hover {
+  background-color: var(--bg-dark-400);
+  border-color: var(--text-muted);
+}
+
+.btn-primary {
+  background-color: var(--accent-blue);
+  border-color: var(--accent-blue);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-blue-hover);
+  border-color: var(--accent-blue-hover);
+}
+
+.btn-sm {
+  padding: 3px 8px;
+  font-size: 11px;
+}
+
+/* Tables */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  text-align: left;
+}
+
+.data-table th {
+  background-color: var(--bg-dark-300);
+  color: var(--text-secondary);
+  font-weight: 600;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.data-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border-color-muted);
+  color: var(--text-primary);
+}
+
+.data-table tr:hover td {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.number-col {
+  text-align: right;
+  font-family: var(--font-mono);
+}
+
+/* Utility State Alerts */
+.state-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  gap: 12px;
+  min-height: 140px;
+  color: var(--text-secondary);
+}
+
+.state-icon {
+  font-size: 24px;
+}
+
+.state-title {
+  font-weight: 600;
+  color: var(--text-primary);
+}

@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-terminal.local/contracts/0.1.0/http_validation_error.schema.json",
+  "title": "HTTPValidationError",
+  "$defs": {
+    "HTTPValidationErrorItem": {
+      "additionalProperties": false,
+      "properties": {
+        "loc": {
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ]
+          },
+          "title": "Loc",
+          "type": "array"
+        },
+        "msg": {
+          "title": "Msg",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "loc",
+        "msg",
+        "type"
+      ],
+      "title": "HTTPValidationErrorItem",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "FastAPI's standard 422 request-validation error envelope.\n\nTraceable to Section 7 ('Backend: Python FastAPI'); this is FastAPI's\nown documented default shape, not an invented one.",
+  "properties": {
+    "detail": {
+      "items": {
+        "$ref": "#/$defs/HTTPValidationErrorItem"
+      },
+      "title": "Detail",
+      "type": "array"
+    }
+  },
+  "required": [
+    "detail"
+  ],
+  "type": "object"
+}

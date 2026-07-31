@@ -1,0 +1,214 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-terminal.local/contracts/0.1.0/bars_response.schema.json",
+  "title": "BarsResponse",
+  "$defs": {
+    "PriceBar": {
+      "additionalProperties": false,
+      "properties": {
+        "symbol": {
+          "examples": [
+            "FPT"
+          ],
+          "title": "Symbol",
+          "type": "string"
+        },
+        "exchange": {
+          "description": "Section 1/10.1: evidenced values are HOSE, HNX, UPCoM. Left as an open string rather than a closed enum; see contracts/OPEN_ITEMS.md.",
+          "examples": [
+            "HOSE",
+            "HNX",
+            "UPCoM"
+          ],
+          "title": "Exchange",
+          "type": "string"
+        },
+        "security_type": {
+          "description": "OPEN ITEM: candidate values inferred from WP1's four FData category directories (stock, index, der, cw) mapping to equity/index/derivative/warrant, plus 'bond' per the Section 3.2 assumption text, which has no confirmed FData source directory. Section 19.2 also notes 'Mixed security types in the stock directory,' so directory alone does not determine this value. Left as an open string; see contracts/OPEN_ITEMS.md.",
+          "examples": [
+            "equity"
+          ],
+          "title": "Security Type",
+          "type": "string"
+        },
+        "timeframe": {
+          "$ref": "#/$defs/Timeframe",
+          "examples": [
+            "1D"
+          ]
+        },
+        "trading_date": {
+          "format": "date",
+          "title": "Trading Date",
+          "type": "string"
+        },
+        "timezone": {
+          "default": "Asia/Ho_Chi_Minh",
+          "description": "Section 10.1 example value; VN Terminal Pro is single-market.",
+          "title": "Timezone",
+          "type": "string"
+        },
+        "open": {
+          "description": "Thousands of VND, back-adjusted (Section 19.1).",
+          "title": "Open",
+          "type": "number"
+        },
+        "high": {
+          "description": "Thousands of VND, back-adjusted (Section 19.1).",
+          "title": "High",
+          "type": "number"
+        },
+        "low": {
+          "description": "Thousands of VND, back-adjusted (Section 19.1).",
+          "title": "Low",
+          "type": "number"
+        },
+        "close": {
+          "description": "Thousands of VND, back-adjusted (Section 19.1).",
+          "title": "Close",
+          "type": "number"
+        },
+        "volume": {
+          "description": "Shares (Section 19.1).",
+          "minimum": 0,
+          "title": "Volume",
+          "type": "integer"
+        },
+        "adjustment_status": {
+          "description": "OPEN ITEM: only 'adjusted_unknown_method' is evidenced (Section 10.1 example). The plan does not enumerate the full set of possible values. See contracts/OPEN_ITEMS.md.",
+          "examples": [
+            "adjusted_unknown_method"
+          ],
+          "title": "Adjustment Status",
+          "type": "string"
+        },
+        "source": {
+          "examples": [
+            "Fialda FData"
+          ],
+          "title": "Source",
+          "type": "string"
+        },
+        "source_file": {
+          "examples": [
+            "C:\\FDATA\\AmiBroker\\EOD\\stock\\FPT.dat"
+          ],
+          "title": "Source File",
+          "type": "string"
+        },
+        "ingested_at": {
+          "format": "date-time",
+          "title": "Ingested At",
+          "type": "string"
+        },
+        "quality_status": {
+          "description": "OPEN ITEM: only 'valid' is evidenced (Section 10.1 example). See contracts/OPEN_ITEMS.md.",
+          "examples": [
+            "valid"
+          ],
+          "title": "Quality Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "symbol",
+        "exchange",
+        "security_type",
+        "timeframe",
+        "trading_date",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume",
+        "adjustment_status",
+        "source",
+        "source_file",
+        "ingested_at",
+        "quality_status"
+      ],
+      "title": "PriceBar",
+      "type": "object"
+    },
+    "Provenance": {
+      "additionalProperties": false,
+      "description": "Attached to every API response envelope (Section 11, Section 3.4).",
+      "properties": {
+        "as_of_date": {
+          "description": "Section 11: 'as_of_date' required on every endpoint.",
+          "format": "date",
+          "title": "As Of Date",
+          "type": "string"
+        },
+        "data_version": {
+          "description": "Section 11: 'data_version' required on every endpoint. Example form from Section 10.5: 'fdata-2026-07-30'.",
+          "title": "Data Version",
+          "type": "string"
+        },
+        "source": {
+          "description": "Section 11: 'source' required on every endpoint.",
+          "title": "Source",
+          "type": "string"
+        },
+        "freshness_status": {
+          "description": "Section 3.4: 'freshness status'. OPEN ITEM: the plan does not enumerate allowed values. See contracts/OPEN_ITEMS.md.",
+          "title": "Freshness Status",
+          "type": "string"
+        },
+        "warnings": {
+          "description": "Section 11: 'Quality and freshness warnings where applicable.'",
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "as_of_date",
+        "data_version",
+        "source",
+        "freshness_status"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "Timeframe": {
+      "description": "Daily, weekly, monthly per Section 12.1 and Section 12.2.\n\nOPEN ITEM: the plan never gives literal timeframe codes. \"1D\" appears\nonce, as an example value in the Section 10.1 price-bar JSON sample.\n\"1W\" and \"1M\" are inferred by this session to cover the weekly and\nmonthly views required by Section 12.1/12.2. See contracts/OPEN_ITEMS.md.",
+      "enum": [
+        "1D",
+        "1W",
+        "1M"
+      ],
+      "title": "Timeframe",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "symbol": {
+      "title": "Symbol",
+      "type": "string"
+    },
+    "timeframe": {
+      "$ref": "#/$defs/Timeframe"
+    },
+    "bars": {
+      "items": {
+        "$ref": "#/$defs/PriceBar"
+      },
+      "title": "Bars",
+      "type": "array"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    }
+  },
+  "required": [
+    "symbol",
+    "timeframe",
+    "bars",
+    "provenance"
+  ],
+  "type": "object"
+}

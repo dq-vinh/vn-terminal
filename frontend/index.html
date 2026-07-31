@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VN Terminal Pro - Equities Workstation</title>
+
+    <!-- ES Module Import Map for Bare Module Specifiers -->
+    <script type="importmap">
+      {
+        "imports": {
+          "lightweight-charts": "../node_modules/lightweight-charts/dist/lightweight-charts.standalone.production.mjs"
+        }
+      }
+    </script>
+
+    <link rel="stylesheet" href="./styles/main.css" />
+    <link rel="stylesheet" href="./styles/toolbar.css" />
+    <link rel="stylesheet" href="./styles/chart.css" />
+    <link rel="stylesheet" href="./styles/panels.css" />
+    <link rel="stylesheet" href="./styles/ai-panel.css" />
+    <link rel="stylesheet" href="./styles/workspace.css" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- Top Toolbar Container -->
+      <header id="toolbar-container"></header>
+
+      <!-- Main Central View (Chart + Right Analytical Panel) -->
+      <div class="main-view">
+        <!-- Central Chart Workspace -->
+        <main class="chart-area">
+          <div class="chart-container">
+            <!-- Floating Chart Tools -->
+            <div class="chart-floating-tools">
+              <button class="chart-tool-btn" id="btn-export-csv" title="Export CSV Data">📥 Export CSV</button>
+              <button class="chart-tool-btn" id="btn-load-5k-bars" title="Test 5,000 Bars Performance">🚀 Load 5k Bars</button>
+            </div>
+
+            <!-- Legend Overlay -->
+            <div class="chart-legend" id="chart-legend">
+              <div class="legend-title">
+                <span class="ticker" id="legend-ticker">FPT</span>
+                <span class="period" id="legend-period">1D</span>
+                <span class="badge badge-success" style="font-size: 10px;">HOSE EOD</span>
+              </div>
+              <div class="legend-values" id="legend-values">
+                <span>O: 65.2</span> <span>H: 67.2</span> <span>L: 64.8</span> <span>C: 67.0</span>
+              </div>
+              <div class="legend-indicators">
+                <span class="ind-tag"><span class="ind-dot" style="background: #2f81f7;"></span>EMA 20</span>
+                <span class="ind-tag"><span class="ind-dot" style="background: #a371f7;"></span>EMA 50</span>
+                <span class="ind-tag"><span class="ind-dot" style="background: #d29922;"></span>SMA 50</span>
+                <span class="ind-tag"><span class="ind-dot" style="background: #f85149;"></span>SMA 200</span>
+              </div>
+            </div>
+
+            <!-- TradingView Lightweight Chart Canvas Wrapper -->
+            <div class="chart-canvas-wrapper" id="chart-canvas-wrapper"></div>
+
+            <!-- Retained TradingView Lightweight Charts Apache 2.0 Attribution -->
+            <div class="chart-attribution">
+              Powered by <a href="https://www.tradingview.com/lightweight-charts/" target="_blank" rel="noopener noreferrer">TradingView Lightweight Charts™</a> (Apache 2.0 License)
+            </div>
+          </div>
+        </main>
+
+        <!-- Right Analytical Panel -->
+        <aside class="right-panel">
+          <div class="tab-header" id="right-tab-header">
+            <button class="tab-btn active" data-tab="indicators" data-i18n="tabIndicators">Chỉ báo</button>
+            <button class="tab-btn" data-tab="strategies" data-i18n="tabStrategies">Chiến lược</button>
+            <button class="tab-btn" data-tab="screener" data-i18n="tabScreener">Bộ lọc</button>
+            <button class="tab-btn" data-tab="fundamentals" data-i18n="tabFundamentals">Tài chính</button>
+            <button class="tab-btn" data-tab="aiAnalysis" data-i18n="tabAiAnalysis">Phân tích AI</button>
+            <button class="tab-btn" data-tab="dataQuality" data-i18n="tabDataQuality">Chất lượng</button>
+          </div>
+
+          <div class="tab-content" id="right-panel-content">
+            <div class="tab-pane active" id="pane-indicators"></div>
+            <div class="tab-pane" id="pane-strategies"></div>
+            <div class="tab-pane" id="pane-screener"></div>
+            <div class="tab-pane" id="pane-fundamentals"></div>
+            <div class="tab-pane" id="pane-ai-analysis"></div>
+            <div class="tab-pane" id="pane-data-quality"></div>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Bottom Workspace -->
+      <footer class="bottom-workspace">
+        <div class="tab-header" id="bottom-tab-header">
+          <button class="tab-btn active" data-tab="watchlist" data-i18n="tabWatchlist">Danh mục theo dõi</button>
+          <button class="tab-btn" data-tab="currentSignals" data-i18n="tabCurrentSignals">Tín hiệu hiện tại</button>
+          <button class="tab-btn" data-tab="signalHistory" data-i18n="tabSignalHistory">Lịch sử tín hiệu</button>
+          <button class="tab-btn" data-tab="backtestTrades" data-i18n="tabBacktestTrades">Giao dịch Backtest</button>
+          <button class="tab-btn" data-tab="equityCurve" data-i18n="tabEquityCurve">Đường cong tài sản</button>
+          <button class="tab-btn" data-tab="portfolioNotes" data-i18n="tabPortfolioNotes">Ghi chú</button>
+          <button class="tab-btn" data-tab="dataRefreshLog" data-i18n="tabDataRefreshLog">Nhật ký cập nhật</button>
+        </div>
+
+        <div class="tab-content" id="bottom-workspace-content">
+          <div class="tab-pane active" id="pane-watchlist"></div>
+          <div class="tab-pane" id="pane-current-signals"></div>
+          <div class="tab-pane" id="pane-signal-history"></div>
+          <div class="tab-pane" id="pane-backtest-trades"></div>
+          <div class="tab-pane" id="pane-equity-curve"></div>
+          <div class="tab-pane" id="pane-portfolio-notes"></div>
+          <div class="tab-pane" id="pane-data-refresh-log"></div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- ES Module Application Bootstrap -->
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

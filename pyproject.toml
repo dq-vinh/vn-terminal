@@ -1,0 +1,54 @@
+[project]
+name = "vn-terminal"
+version = "0.1.0"
+description = "VN Terminal Pro: local Vietnamese-equities research workstation (backend). See vn_terminal_multi_ai_development_plan.md v1.1."
+requires-python = ">=3.11"
+readme = "README.md"
+
+# Every dependency below is pinned to an exact version. Versions for the
+# Section 7 plan-mandated stack (fastapi, pydantic, duckdb, pandas, numpy,
+# pytest) were verified via web search as of 2026-07-30 (current stable
+# releases at that date). Versions for supporting libraries the plan does
+# not name (uvicorn, pyarrow, jsonschema, pyyaml, openapi-spec-validator,
+# email-validator) were verified the same way; see contracts/OPEN_ITEMS.md,
+# section C, for why each is needed even though the plan does not name it.
+dependencies = [
+    # Section 7: "Backend: Python FastAPI"
+    "fastapi==0.124.4",
+    # Section 7: "API models: Pydantic"
+    "pydantic==2.13.3",
+    # ASGI server to actually run FastAPI. Not named by the plan; see
+    # contracts/OPEN_ITEMS.md, section C.
+    "uvicorn[standard]==0.52.0",
+    # Section 7: "Analytical storage: DuckDB"
+    "duckdb==1.5.2",
+    # Section 7: "Data processing: Python, pandas, NumPy"
+    "pandas==3.0.3",
+    "numpy==2.4.4",
+    # Parquet I/O for pandas/DuckDB (Section 7: "Raw snapshots: Parquet").
+    # Not named by the plan as a library; see contracts/OPEN_ITEMS.md.
+    "pyarrow==25.0.0",
+    # .env loading for the variables in .env.example (Section 20: secrets
+    # in environment variables). Not named by the plan.
+    "python-dotenv==1.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    # Section 7: "Backend tests: pytest"
+    "pytest==9.1.1",
+    # Used by tests/contracts to validate fixtures against
+    # contracts/schemas/json/*.schema.json.
+    "jsonschema==4.23.0",
+    # Used by contracts/build_openapi.py and tests/contracts to read/write
+    # and validate contracts/openapi.yaml.
+    "pyyaml==6.0.2",
+    "openapi-spec-validator==0.7.1",
+    # Required by Pydantic for the email-format validation used nowhere
+    # yet in the canonical contracts, but kept available since FastAPI
+    # commonly needs it for request models; pinned defensively.
+    "email-validator==2.2.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

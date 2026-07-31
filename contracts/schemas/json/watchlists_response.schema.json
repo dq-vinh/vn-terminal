@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-terminal.local/contracts/0.1.0/watchlists_response.schema.json",
+  "title": "WatchlistsResponse",
+  "$defs": {
+    "Provenance": {
+      "additionalProperties": false,
+      "description": "Attached to every API response envelope (Section 11, Section 3.4).",
+      "properties": {
+        "as_of_date": {
+          "description": "Section 11: 'as_of_date' required on every endpoint.",
+          "format": "date",
+          "title": "As Of Date",
+          "type": "string"
+        },
+        "data_version": {
+          "description": "Section 11: 'data_version' required on every endpoint. Example form from Section 10.5: 'fdata-2026-07-30'.",
+          "title": "Data Version",
+          "type": "string"
+        },
+        "source": {
+          "description": "Section 11: 'source' required on every endpoint.",
+          "title": "Source",
+          "type": "string"
+        },
+        "freshness_status": {
+          "description": "Section 3.4: 'freshness status'. OPEN ITEM: the plan does not enumerate allowed values. See contracts/OPEN_ITEMS.md.",
+          "title": "Freshness Status",
+          "type": "string"
+        },
+        "warnings": {
+          "description": "Section 11: 'Quality and freshness warnings where applicable.'",
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "as_of_date",
+        "data_version",
+        "source",
+        "freshness_status"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "WatchlistItem": {
+      "additionalProperties": false,
+      "description": "Section 12.4 'Watchlist' tab; WP12 deliverable 'Watchlists.'\n\nOPEN ITEM: the plan does not give a Watchlist field list. This is a\nminimal shape covering what Section 12.4/WP12 imply a watchlist needs.\nSee contracts/OPEN_ITEMS.md.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "symbols": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Symbols",
+          "type": "array"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "updated_at": {
+          "format": "date-time",
+          "title": "Updated At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "symbols",
+        "created_at",
+        "updated_at"
+      ],
+      "title": "WatchlistItem",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "watchlists": {
+      "items": {
+        "$ref": "#/$defs/WatchlistItem"
+      },
+      "title": "Watchlists",
+      "type": "array"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    }
+  },
+  "required": [
+    "watchlists",
+    "provenance"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-terminal.local/contracts/0.1.0/levels.schema.json",
+  "title": "Levels",
+  "additionalProperties": false,
+  "description": "Section 10.5 'levels' object, reused by the AI fact bundle (10.6).",
+  "properties": {
+    "support": {
+      "items": {
+        "type": "number"
+      },
+      "title": "Support",
+      "type": "array"
+    },
+    "resistance": {
+      "items": {
+        "type": "number"
+      },
+      "title": "Resistance",
+      "type": "array"
+    },
+    "invalidation": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Invalidation"
+    }
+  },
+  "type": "object"
+}

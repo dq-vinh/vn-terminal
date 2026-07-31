@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-terminal.local/contracts/0.1.0/health_response.schema.json",
+  "title": "HealthResponse",
+  "$defs": {
+    "AIProviderType": {
+      "description": "Section 18.2 adapters list.",
+      "enum": [
+        "openrouter",
+        "ollama",
+        "openai_compatible"
+      ],
+      "title": "AIProviderType",
+      "type": "string"
+    },
+    "DatabaseStatus": {
+      "additionalProperties": false,
+      "properties": {
+        "connected": {
+          "title": "Connected",
+          "type": "boolean"
+        },
+        "latest_snapshot_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Latest Snapshot Date"
+        }
+      },
+      "required": [
+        "connected"
+      ],
+      "title": "DatabaseStatus",
+      "type": "object"
+    },
+    "Provenance": {
+      "additionalProperties": false,
+      "description": "Attached to every API response envelope (Section 11, Section 3.4).",
+      "properties": {
+        "as_of_date": {
+          "description": "Section 11: 'as_of_date' required on every endpoint.",
+          "format": "date",
+          "title": "As Of Date",
+          "type": "string"
+        },
+        "data_version": {
+          "description": "Section 11: 'data_version' required on every endpoint. Example form from Section 10.5: 'fdata-2026-07-30'.",
+          "title": "Data Version",
+          "type": "string"
+        },
+        "source": {
+          "description": "Section 11: 'source' required on every endpoint.",
+          "title": "Source",
+          "type": "string"
+        },
+        "freshness_status": {
+          "description": "Section 3.4: 'freshness status'. OPEN ITEM: the plan does not enumerate allowed values. See contracts/OPEN_ITEMS.md.",
+          "title": "Freshness Status",
+          "type": "string"
+        },
+        "warnings": {
+          "description": "Section 11: 'Quality and freshness warnings where applicable.'",
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "as_of_date",
+        "data_version",
+        "source",
+        "freshness_status"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "ProviderStatus": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "examples": [
+            "openrouter",
+            "ollama"
+          ],
+          "title": "Name",
+          "type": "string"
+        },
+        "provider_type": {
+          "$ref": "#/$defs/AIProviderType"
+        },
+        "available": {
+          "title": "Available",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "provider_type",
+        "available"
+      ],
+      "title": "ProviderStatus",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "status": {
+      "description": "OPEN ITEM: Section 11 requires an 'Application, database, and provider status' but does not give a closed vocabulary. See contracts/OPEN_ITEMS.md, 'Job/health status vocabulary.'",
+      "examples": [
+        "ok"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "database": {
+      "$ref": "#/$defs/DatabaseStatus"
+    },
+    "providers": {
+      "items": {
+        "$ref": "#/$defs/ProviderStatus"
+      },
+      "title": "Providers",
+      "type": "array"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    }
+  },
+  "required": [
+    "status",
+    "database",
+    "provenance"
+  ],
+  "type": "object"
+}

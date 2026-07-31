@@ -1,0 +1,325 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-terminal.local/contracts/0.1.0/backtest_results_response.schema.json",
+  "title": "BacktestResultsResponse",
+  "$defs": {
+    "BacktestMetrics": {
+      "additionalProperties": false,
+      "description": "Section 16 'Required outputs' list, excluding trade/equity/drawdown series.",
+      "properties": {
+        "cagr": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cagr"
+        },
+        "annualized_return": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Annualized Return"
+        },
+        "volatility": {
+          "title": "Volatility",
+          "type": "number"
+        },
+        "sharpe": {
+          "description": "Section 16 requires this 'with definitions.'",
+          "title": "Sharpe",
+          "type": "number"
+        },
+        "sortino": {
+          "description": "Section 16 requires this 'with definitions.'",
+          "title": "Sortino",
+          "type": "number"
+        },
+        "max_drawdown": {
+          "title": "Max Drawdown",
+          "type": "number"
+        },
+        "win_rate": {
+          "title": "Win Rate",
+          "type": "number"
+        },
+        "profit_factor": {
+          "title": "Profit Factor",
+          "type": "number"
+        },
+        "average_holding_period_days": {
+          "title": "Average Holding Period Days",
+          "type": "number"
+        },
+        "turnover": {
+          "title": "Turnover",
+          "type": "number"
+        },
+        "exposure": {
+          "title": "Exposure",
+          "type": "number"
+        },
+        "benchmark_comparison": {
+          "additionalProperties": true,
+          "description": "OPEN ITEM: Section 16 requires 'Benchmark comparison' without a defined shape. Typed as an open object. See contracts/OPEN_ITEMS.md.",
+          "title": "Benchmark Comparison",
+          "type": "object"
+        }
+      },
+      "required": [
+        "volatility",
+        "sharpe",
+        "sortino",
+        "max_drawdown",
+        "win_rate",
+        "profit_factor",
+        "average_holding_period_days",
+        "turnover",
+        "exposure",
+        "benchmark_comparison"
+      ],
+      "title": "BacktestMetrics",
+      "type": "object"
+    },
+    "DrawdownCurvePoint": {
+      "additionalProperties": false,
+      "properties": {
+        "trading_date": {
+          "format": "date",
+          "title": "Trading Date",
+          "type": "string"
+        },
+        "drawdown": {
+          "title": "Drawdown",
+          "type": "number"
+        }
+      },
+      "required": [
+        "trading_date",
+        "drawdown"
+      ],
+      "title": "DrawdownCurvePoint",
+      "type": "object"
+    },
+    "EquityCurvePoint": {
+      "additionalProperties": false,
+      "properties": {
+        "trading_date": {
+          "format": "date",
+          "title": "Trading Date",
+          "type": "string"
+        },
+        "equity": {
+          "title": "Equity",
+          "type": "number"
+        }
+      },
+      "required": [
+        "trading_date",
+        "equity"
+      ],
+      "title": "EquityCurvePoint",
+      "type": "object"
+    },
+    "Provenance": {
+      "additionalProperties": false,
+      "description": "Attached to every API response envelope (Section 11, Section 3.4).",
+      "properties": {
+        "as_of_date": {
+          "description": "Section 11: 'as_of_date' required on every endpoint.",
+          "format": "date",
+          "title": "As Of Date",
+          "type": "string"
+        },
+        "data_version": {
+          "description": "Section 11: 'data_version' required on every endpoint. Example form from Section 10.5: 'fdata-2026-07-30'.",
+          "title": "Data Version",
+          "type": "string"
+        },
+        "source": {
+          "description": "Section 11: 'source' required on every endpoint.",
+          "title": "Source",
+          "type": "string"
+        },
+        "freshness_status": {
+          "description": "Section 3.4: 'freshness status'. OPEN ITEM: the plan does not enumerate allowed values. See contracts/OPEN_ITEMS.md.",
+          "title": "Freshness Status",
+          "type": "string"
+        },
+        "warnings": {
+          "description": "Section 11: 'Quality and freshness warnings where applicable.'",
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "as_of_date",
+        "data_version",
+        "source",
+        "freshness_status"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "Trade": {
+      "additionalProperties": false,
+      "description": "Section 16: 'Trade list.'\n\nOPEN ITEM: the plan requires trade-list output but does not give a\nper-trade field list. This shape follows standard backtest trade\nrecords and the fields the plan does specify elsewhere (symbol,\nentry/exit convention, transaction cost, slippage).",
+      "properties": {
+        "symbol": {
+          "title": "Symbol",
+          "type": "string"
+        },
+        "entry_date": {
+          "format": "date",
+          "title": "Entry Date",
+          "type": "string"
+        },
+        "exit_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Exit Date"
+        },
+        "entry_price": {
+          "title": "Entry Price",
+          "type": "number"
+        },
+        "exit_price": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Exit Price"
+        },
+        "quantity": {
+          "title": "Quantity",
+          "type": "number"
+        },
+        "transaction_cost_paid": {
+          "title": "Transaction Cost Paid",
+          "type": "number"
+        },
+        "slippage_paid": {
+          "title": "Slippage Paid",
+          "type": "number"
+        },
+        "pnl": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pnl"
+        }
+      },
+      "required": [
+        "symbol",
+        "entry_date",
+        "entry_price",
+        "quantity",
+        "transaction_cost_paid",
+        "slippage_paid"
+      ],
+      "title": "Trade",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "run_id": {
+      "title": "Run Id",
+      "type": "string"
+    },
+    "status": {
+      "examples": [
+        "completed",
+        "failed"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "trades": {
+      "items": {
+        "$ref": "#/$defs/Trade"
+      },
+      "title": "Trades",
+      "type": "array"
+    },
+    "equity_curve": {
+      "items": {
+        "$ref": "#/$defs/EquityCurvePoint"
+      },
+      "title": "Equity Curve",
+      "type": "array"
+    },
+    "drawdown_curve": {
+      "items": {
+        "$ref": "#/$defs/DrawdownCurvePoint"
+      },
+      "title": "Drawdown Curve",
+      "type": "array"
+    },
+    "metrics": {
+      "$ref": "#/$defs/BacktestMetrics"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    },
+    "data_version": {
+      "title": "Data Version",
+      "type": "string"
+    },
+    "strategy_version": {
+      "title": "Strategy Version",
+      "type": "string"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    }
+  },
+  "required": [
+    "run_id",
+    "status",
+    "trades",
+    "equity_curve",
+    "drawdown_curve",
+    "metrics",
+    "data_version",
+    "strategy_version",
+    "provenance"
+  ],
+  "type": "object"
+}

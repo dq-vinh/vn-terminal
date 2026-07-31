@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-terminal.local/contracts/0.1.0/settings_update_request.schema.json",
+  "title": "SettingsUpdateRequest",
+  "additionalProperties": false,
+  "properties": {
+    "settings": {
+      "additionalProperties": true,
+      "title": "Settings",
+      "type": "object"
+    }
+  },
+  "required": [
+    "settings"
+  ],
+  "type": "object"
+}

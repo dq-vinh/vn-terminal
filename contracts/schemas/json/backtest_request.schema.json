@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-terminal.local/contracts/0.1.0/backtest_request.schema.json",
+  "title": "BacktestRequest",
+  "$defs": {
+    "BacktestPeriod": {
+      "additionalProperties": false,
+      "properties": {
+        "start_date": {
+          "format": "date",
+          "title": "Start Date",
+          "type": "string"
+        },
+        "end_date": {
+          "format": "date",
+          "title": "End Date",
+          "type": "string"
+        }
+      },
+      "required": [
+        "start_date",
+        "end_date"
+      ],
+      "title": "BacktestPeriod",
+      "type": "object"
+    },
+    "ExecutionConvention": {
+      "description": "Section 16: \"Entry at next open or next close, explicitly selected.",
+      "enum": [
+        "next_open",
+        "next_close"
+      ],
+      "title": "ExecutionConvention",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Section 16 'Required controls' list.",
+  "properties": {
+    "strategy_id": {
+      "title": "Strategy Id",
+      "type": "string"
+    },
+    "symbol_universe": {
+      "description": "OPEN ITEM: the plan does not say whether a backtest targets an explicit symbol list, a named universe, or the full market. Modeled as an explicit list of symbols; a full-market run is expressed by passing every eligible symbol from /api/symbols. See contracts/OPEN_ITEMS.md.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Symbol Universe",
+      "type": "array"
+    },
+    "entry_convention": {
+      "$ref": "#/$defs/ExecutionConvention"
+    },
+    "exit_convention": {
+      "description": "OPEN ITEM: Section 16 requires an 'Exit convention' but, unlike entry convention, does not give a closed list. See contracts/OPEN_ITEMS.md.",
+      "title": "Exit Convention",
+      "type": "string"
+    },
+    "transaction_cost": {
+      "minimum": 0,
+      "title": "Transaction Cost",
+      "type": "number"
+    },
+    "slippage": {
+      "minimum": 0,
+      "title": "Slippage",
+      "type": "number"
+    },
+    "position_size": {
+      "additionalProperties": true,
+      "description": "OPEN ITEM: Section 16 requires 'Position size' without specifying whether it is a fixed amount, a percentage of equity, or a volatility-scaled rule. Typed as an open object. See contracts/OPEN_ITEMS.md.",
+      "title": "Position Size",
+      "type": "object"
+    },
+    "max_concurrent_positions": {
+      "minimum": 1,
+      "title": "Max Concurrent Positions",
+      "type": "integer"
+    },
+    "liquidity_constraint": {
+      "additionalProperties": true,
+      "description": "OPEN ITEM: Section 16 requires a 'Liquidity constraint' without a defined shape. Typed as an open object. See contracts/OPEN_ITEMS.md.",
+      "title": "Liquidity Constraint",
+      "type": "object"
+    },
+    "price_adjustment_convention": {
+      "description": "OPEN ITEM: Section 16 requires a 'Price-adjustment convention' without an enumerated set of conventions. See contracts/OPEN_ITEMS.md.",
+      "title": "Price Adjustment Convention",
+      "type": "string"
+    },
+    "benchmark": {
+      "description": "Section 16: 'Benchmark.' Typically a security_master symbol/index_code.",
+      "title": "Benchmark",
+      "type": "string"
+    },
+    "in_sample_period": {
+      "$ref": "#/$defs/BacktestPeriod"
+    },
+    "out_of_sample_period": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/BacktestPeriod"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Section 16: 'In-sample and out-of-sample periods.'"
+    }
+  },
+  "required": [
+    "strategy_id",
+    "symbol_universe",
+    "entry_convention",
+    "exit_convention",
+    "transaction_cost",
+    "slippage",
+    "position_size",
+    "max_concurrent_positions",
+    "liquidity_constraint",
+    "price_adjustment_convention",
+    "benchmark",
+    "in_sample_period"
+  ],
+  "type": "object"
+}

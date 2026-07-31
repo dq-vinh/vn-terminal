@@ -1,0 +1,267 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-terminal.local/contracts/0.1.0/ai_fact_bundle.schema.json",
+  "title": "AIFactBundle",
+  "$defs": {
+    "Levels": {
+      "additionalProperties": false,
+      "description": "Section 10.5 'levels' object, reused by the AI fact bundle (10.6).",
+      "properties": {
+        "support": {
+          "items": {
+            "type": "number"
+          },
+          "title": "Support",
+          "type": "array"
+        },
+        "resistance": {
+          "items": {
+            "type": "number"
+          },
+          "title": "Resistance",
+          "type": "array"
+        },
+        "invalidation": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Invalidation"
+        }
+      },
+      "title": "Levels",
+      "type": "object"
+    },
+    "MoneyFlowBlock": {
+      "additionalProperties": false,
+      "properties": {
+        "accumulation_distribution_line": {
+          "description": "Section 14: accumulation/distribution line, latest value.",
+          "title": "Accumulation Distribution Line",
+          "type": "number"
+        },
+        "on_balance_volume": {
+          "description": "Section 14: on-balance volume, latest value.",
+          "title": "On Balance Volume",
+          "type": "number"
+        },
+        "up_down_volume_ratio": {
+          "description": "Section 14: up-day versus down-day volume ratio.",
+          "title": "Up Down Volume Ratio",
+          "type": "number"
+        },
+        "volume_at_price_concentration": {
+          "additionalProperties": true,
+          "description": "OPEN ITEM: Section 14 names 'volume-at-price concentration' as a member of this block but does not define its shape (for example a price-to-volume histogram, or a single concentration score). Typed as an open object. See contracts/OPEN_ITEMS.md.",
+          "title": "Volume At Price Concentration",
+          "type": "object"
+        },
+        "unusual_volume_flags": {
+          "description": "Section 14: 'unusual-volume flags' (plural). Modeled as a list of ISO dates on which unusual volume was flagged. OPEN ITEM: the plan does not define the detection threshold or the exact record shape. See contracts/OPEN_ITEMS.md.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Unusual Volume Flags",
+          "type": "array"
+        },
+        "close_vs_vwap": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Section 14: 'Once Aux1 is confirmed as unadjusted VWAP, close-versus-VWAP positioning joins this block.' Null until WP1's Aux1 confirmation task (Section 19.1, WP1 acceptance criteria) concludes. Do not populate before that confirmation is recorded in docs/data_dictionary.md.",
+          "title": "Close Vs Vwap"
+        }
+      },
+      "required": [
+        "accumulation_distribution_line",
+        "on_balance_volume",
+        "up_down_volume_ratio",
+        "volume_at_price_concentration"
+      ],
+      "title": "MoneyFlowBlock",
+      "type": "object"
+    },
+    "StrategyEvaluationResult": {
+      "additionalProperties": false,
+      "properties": {
+        "symbol": {
+          "examples": [
+            "FPT"
+          ],
+          "title": "Symbol",
+          "type": "string"
+        },
+        "as_of_date": {
+          "format": "date",
+          "title": "As Of Date",
+          "type": "string"
+        },
+        "strategy_id": {
+          "examples": [
+            "minervini_trend_template"
+          ],
+          "title": "Strategy Id",
+          "type": "string"
+        },
+        "strategy_version": {
+          "examples": [
+            "1.0.0"
+          ],
+          "title": "Strategy Version",
+          "type": "string"
+        },
+        "signal": {
+          "description": "OPEN ITEM: only 'watch' is evidenced (Section 10.5 example). The plan does not enumerate the full signal vocabulary (for example whether 'buy', 'sell', 'hold' also exist). See contracts/OPEN_ITEMS.md.",
+          "examples": [
+            "watch"
+          ],
+          "title": "Signal",
+          "type": "string"
+        },
+        "score": {
+          "title": "Score",
+          "type": "integer"
+        },
+        "max_score": {
+          "title": "Max Score",
+          "type": "integer"
+        },
+        "passed_criteria": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Passed Criteria",
+          "type": "array"
+        },
+        "failed_criteria": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Failed Criteria",
+          "type": "array"
+        },
+        "levels": {
+          "$ref": "#/$defs/Levels"
+        },
+        "data_version": {
+          "examples": [
+            "fdata-2026-07-30"
+          ],
+          "title": "Data Version",
+          "type": "string"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "symbol",
+        "as_of_date",
+        "strategy_id",
+        "strategy_version",
+        "signal",
+        "score",
+        "max_score",
+        "levels",
+        "data_version"
+      ],
+      "title": "StrategyEvaluationResult",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "symbol": {
+      "description": "Section 10.6: 'Symbol identity and as-of date.'",
+      "title": "Symbol",
+      "type": "string"
+    },
+    "as_of_date": {
+      "format": "date",
+      "title": "As Of Date",
+      "type": "string"
+    },
+    "price_summary": {
+      "additionalProperties": true,
+      "description": "Section 10.6: 'Price and volume summary.' OPEN ITEM: no internal shape given by the plan. Typed as an open object. See contracts/OPEN_ITEMS.md.",
+      "title": "Price Summary",
+      "type": "object"
+    },
+    "indicators": {
+      "additionalProperties": true,
+      "description": "Section 10.6: 'Deterministic indicators.' OPEN ITEM: Section 14 names the indicator list but not the fact-bundle serialization shape. Typed as an open object. See contracts/OPEN_ITEMS.md.",
+      "title": "Indicators",
+      "type": "object"
+    },
+    "money_flow": {
+      "$ref": "#/$defs/MoneyFlowBlock",
+      "description": "Section 10.6: 'Money-flow and accumulation metrics from Section 14.'"
+    },
+    "strategy_results": {
+      "description": "Section 10.6: 'Strategy results and failed criteria.'",
+      "items": {
+        "$ref": "#/$defs/StrategyEvaluationResult"
+      },
+      "title": "Strategy Results",
+      "type": "array"
+    },
+    "financial_summary": {
+      "additionalProperties": true,
+      "description": "Section 10.6: 'Financial history and growth metrics.' OPEN ITEM: no internal shape given by the plan. Typed as an open object. See contracts/OPEN_ITEMS.md.",
+      "title": "Financial Summary",
+      "type": "object"
+    },
+    "levels": {
+      "$ref": "#/$defs/Levels",
+      "description": "Section 10.6: 'Support, resistance, and invalidation candidates.'"
+    },
+    "data_quality": {
+      "additionalProperties": true,
+      "description": "Section 10.6: 'Data freshness and quality warnings.' Expected to carry a freshness_status and a list of QualityIssue entries (see common.QualityIssue), but the plan does not fix an exact shape for this bullet either. Typed as an open object. See contracts/OPEN_ITEMS.md.",
+      "title": "Data Quality",
+      "type": "object"
+    },
+    "sources": {
+      "description": "Section 10.6: 'Source URLs...' — modeled as a list of URL strings.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Sources",
+      "type": "array"
+    },
+    "calculation_definitions": {
+      "description": "Section 10.6: '...and calculation definitions.' — modeled as a list of human-readable definition strings, matching the per-indicator documentation required by Section 14 (formula, input price, adjustment convention, warm-up period, missing-value behavior, comparison reference, numerical tolerance).",
+      "items": {
+        "type": "string"
+      },
+      "title": "Calculation Definitions",
+      "type": "array"
+    }
+  },
+  "required": [
+    "symbol",
+    "as_of_date",
+    "price_summary",
+    "indicators",
+    "money_flow",
+    "financial_summary",
+    "levels",
+    "data_quality"
+  ],
+  "type": "object"
+}

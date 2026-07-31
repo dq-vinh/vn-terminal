@@ -1,0 +1,224 @@
+/* AI Panel Special Visual Styling (Section 12.5 Requirement) */
+
+.ai-panel-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+  min-height: 0;
+}
+
+.ai-header-card {
+  background-color: var(--bg-dark-300);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.ai-input-group {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.ai-prompt-input {
+  flex: 1;
+  padding: 8px 10px;
+  background-color: var(--bg-dark-200);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 12px;
+  outline: none;
+}
+
+.ai-prompt-input:focus {
+  border-color: var(--accent-purple);
+}
+
+/* Category Legend Header */
+.ai-legend {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 8px;
+  background-color: var(--bg-dark-200);
+  border: 1px solid var(--border-color-muted);
+  border-radius: 6px;
+  font-size: 11px;
+}
+
+.ai-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Four Category Card Types - Explicit Visual Treatments */
+
+/* Category 1: FACT */
+.ai-card-fact {
+  background-color: var(--cat-fact-bg);
+  border-left: 4px solid var(--cat-fact-border);
+  border-top: 1px solid rgba(46, 160, 67, 0.2);
+  border-right: 1px solid rgba(46, 160, 67, 0.2);
+  border-bottom: 1px solid rgba(46, 160, 67, 0.2);
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+
+.ai-card-fact .category-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--cat-fact-text);
+  background: rgba(46, 160, 67, 0.25);
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Category 2: CALCULATED RESULT */
+.ai-card-calc {
+  background-color: var(--cat-calc-bg);
+  border-left: 4px solid var(--cat-calc-border);
+  border-top: 1px solid rgba(56, 139, 253, 0.2);
+  border-right: 1px solid rgba(56, 139, 253, 0.2);
+  border-bottom: 1px solid rgba(56, 139, 253, 0.2);
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+
+.ai-card-calc .category-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--cat-calc-text);
+  background: rgba(56, 139, 253, 0.25);
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Category 3: AI INFERENCE */
+.ai-card-inference {
+  background-color: var(--cat-ai-bg);
+  border-left: 4px solid var(--cat-ai-border);
+  border-top: 1px solid rgba(163, 113, 247, 0.3);
+  border-right: 1px solid rgba(163, 113, 247, 0.3);
+  border-bottom: 1px solid rgba(163, 113, 247, 0.3);
+  box-shadow: 0 0 12px var(--cat-ai-glow);
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+
+.ai-card-inference .category-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--cat-ai-text);
+  background: rgba(163, 113, 247, 0.3);
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Category 4: UNAVAILABLE / UNVERIFIED */
+.ai-card-unverified {
+  background-color: var(--cat-unverified-bg);
+  border-left: 4px dashed var(--cat-unverified-border);
+  border-top: 1px solid rgba(210, 153, 34, 0.2);
+  border-right: 1px solid rgba(210, 153, 34, 0.2);
+  border-bottom: 1px solid rgba(210, 153, 34, 0.2);
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+
+.ai-card-unverified .category-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--cat-unverified-text);
+  background: rgba(210, 153, 34, 0.25);
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Fact Inspector Expandable Drawer */
+.fact-expand-btn {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 0;
+}
+
+.fact-expand-btn:hover {
+  color: var(--text-primary);
+  text-decoration: underline;
+}
+
+.fact-details-drawer {
+  display: none;
+  margin-top: 8px;
+  padding: 8px 10px;
+  background-color: var(--bg-dark-100);
+  border: 1px solid var(--border-color-muted);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.fact-details-drawer.open {
+  display: block;
+}
+
+/* Scenario Grid */
+.scenario-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.scenario-card {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color-muted);
+  background-color: var(--bg-dark-200);
+}
+
+.scenario-title {
+  font-weight: 700;
+  font-size: 11px;
+  margin-bottom: 4px;
+}
+
+.scenario-base { border-left: 3px solid var(--accent-blue); }
+.scenario-bull { border-left: 3px solid var(--accent-green); }
+.scenario-bear { border-left: 3px solid var(--accent-red); }

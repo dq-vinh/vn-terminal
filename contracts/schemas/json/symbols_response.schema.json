@@ -1,0 +1,227 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-terminal.local/contracts/0.1.0/symbols_response.schema.json",
+  "title": "SymbolsResponse",
+  "$defs": {
+    "Provenance": {
+      "additionalProperties": false,
+      "description": "Attached to every API response envelope (Section 11, Section 3.4).",
+      "properties": {
+        "as_of_date": {
+          "description": "Section 11: 'as_of_date' required on every endpoint.",
+          "format": "date",
+          "title": "As Of Date",
+          "type": "string"
+        },
+        "data_version": {
+          "description": "Section 11: 'data_version' required on every endpoint. Example form from Section 10.5: 'fdata-2026-07-30'.",
+          "title": "Data Version",
+          "type": "string"
+        },
+        "source": {
+          "description": "Section 11: 'source' required on every endpoint.",
+          "title": "Source",
+          "type": "string"
+        },
+        "freshness_status": {
+          "description": "Section 3.4: 'freshness status'. OPEN ITEM: the plan does not enumerate allowed values. See contracts/OPEN_ITEMS.md.",
+          "title": "Freshness Status",
+          "type": "string"
+        },
+        "warnings": {
+          "description": "Section 11: 'Quality and freshness warnings where applicable.'",
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "as_of_date",
+        "data_version",
+        "source",
+        "freshness_status"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "SecurityMaster": {
+      "additionalProperties": false,
+      "properties": {
+        "symbol": {
+          "title": "Symbol",
+          "type": "string"
+        },
+        "isin": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Section 10.2: 'isin, when available.'",
+          "title": "Isin"
+        },
+        "exchange": {
+          "description": "See OPEN_ITEMS.md; same open-string treatment as PriceBar.exchange.",
+          "examples": [
+            "HOSE",
+            "HNX",
+            "UPCoM"
+          ],
+          "title": "Exchange",
+          "type": "string"
+        },
+        "security_type": {
+          "description": "See OPEN_ITEMS.md; same open-string treatment as PriceBar.security_type.",
+          "examples": [
+            "equity"
+          ],
+          "title": "Security Type",
+          "type": "string"
+        },
+        "company_name": {
+          "title": "Company Name",
+          "type": "string"
+        },
+        "sector": {
+          "title": "Sector",
+          "type": "string"
+        },
+        "industry": {
+          "title": "Industry",
+          "type": "string"
+        },
+        "listing_date": {
+          "format": "date",
+          "title": "Listing Date",
+          "type": "string"
+        },
+        "delisting_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Section 10.2 lists this field; only populated for delisted securities.",
+          "title": "Delisting Date"
+        },
+        "trading_status": {
+          "description": "OPEN ITEM: Section 3.2 mentions distinguishing 'suspended securities, and delisted securities'; WP2 (Section 22) speaks of 'Active/inactive status.' Whether trading_status is a three-plus-value set (active/suspended/delisted/...) or a two-value active/inactive flag with suspension detail held elsewhere is not settled by the plan. See contracts/OPEN_ITEMS.md.",
+          "examples": [
+            "active",
+            "suspended",
+            "delisted"
+          ],
+          "title": "Trading Status",
+          "type": "string"
+        },
+        "currency": {
+          "examples": [
+            "VND"
+          ],
+          "title": "Currency",
+          "type": "string"
+        },
+        "price_unit": {
+          "description": "Section 3.2: 'OHLC prices appear to be historically adjusted and expressed in thousands of VND.'",
+          "examples": [
+            "thousand_vnd"
+          ],
+          "title": "Price Unit",
+          "type": "string"
+        },
+        "lot_size": {
+          "minimum": 1,
+          "title": "Lot Size",
+          "type": "integer"
+        },
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "valid_from": {
+          "format": "date",
+          "title": "Valid From",
+          "type": "string"
+        },
+        "valid_to": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Valid To"
+        },
+        "index_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Only populated for security_type=index entries sourced from EOD/index, whose 207 files are named with numeric codes (for example 0001.dat, 0500.dat) rather than symbols (Section 10.2). Not a literal field name from the plan; see contracts/OPEN_ITEMS.md.",
+          "title": "Index Code"
+        }
+      },
+      "required": [
+        "symbol",
+        "exchange",
+        "security_type",
+        "company_name",
+        "sector",
+        "industry",
+        "listing_date",
+        "trading_status",
+        "currency",
+        "price_unit",
+        "lot_size",
+        "source",
+        "valid_from"
+      ],
+      "title": "SecurityMaster",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "items": {
+      "items": {
+        "$ref": "#/$defs/SecurityMaster"
+      },
+      "title": "Items",
+      "type": "array"
+    },
+    "total": {
+      "minimum": 0,
+      "title": "Total",
+      "type": "integer"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    }
+  },
+  "required": [
+    "items",
+    "total",
+    "provenance"
+  ],
+  "type": "object"
+}

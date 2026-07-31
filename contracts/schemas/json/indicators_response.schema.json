@@ -1,0 +1,215 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-terminal.local/contracts/0.1.0/indicators_response.schema.json",
+  "title": "IndicatorsResponse",
+  "$defs": {
+    "IndicatorPoint": {
+      "additionalProperties": false,
+      "properties": {
+        "trading_date": {
+          "format": "date",
+          "title": "Trading Date",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Section 14: 'Missing-value behaviour' must be documented per indicator; null during warm-up.",
+          "title": "Value"
+        }
+      },
+      "required": [
+        "trading_date"
+      ],
+      "title": "IndicatorPoint",
+      "type": "object"
+    },
+    "IndicatorSeries": {
+      "additionalProperties": false,
+      "properties": {
+        "indicator_id": {
+          "description": "Section 14 initial indicator list, given as machine-readable ids.",
+          "examples": [
+            "sma",
+            "ema",
+            "rsi",
+            "macd",
+            "atr",
+            "bollinger_bands",
+            "rolling_high",
+            "rolling_low",
+            "rate_of_change",
+            "relative_strength_vnindex",
+            "relative_strength_sector",
+            "volume_sma",
+            "volume_price_trend",
+            "pivot_levels",
+            "rolling_volatility",
+            "drawdown"
+          ],
+          "title": "Indicator Id",
+          "type": "string"
+        },
+        "values": {
+          "items": {
+            "$ref": "#/$defs/IndicatorPoint"
+          },
+          "title": "Values",
+          "type": "array"
+        }
+      },
+      "required": [
+        "indicator_id",
+        "values"
+      ],
+      "title": "IndicatorSeries",
+      "type": "object"
+    },
+    "MoneyFlowBlock": {
+      "additionalProperties": false,
+      "properties": {
+        "accumulation_distribution_line": {
+          "description": "Section 14: accumulation/distribution line, latest value.",
+          "title": "Accumulation Distribution Line",
+          "type": "number"
+        },
+        "on_balance_volume": {
+          "description": "Section 14: on-balance volume, latest value.",
+          "title": "On Balance Volume",
+          "type": "number"
+        },
+        "up_down_volume_ratio": {
+          "description": "Section 14: up-day versus down-day volume ratio.",
+          "title": "Up Down Volume Ratio",
+          "type": "number"
+        },
+        "volume_at_price_concentration": {
+          "additionalProperties": true,
+          "description": "OPEN ITEM: Section 14 names 'volume-at-price concentration' as a member of this block but does not define its shape (for example a price-to-volume histogram, or a single concentration score). Typed as an open object. See contracts/OPEN_ITEMS.md.",
+          "title": "Volume At Price Concentration",
+          "type": "object"
+        },
+        "unusual_volume_flags": {
+          "description": "Section 14: 'unusual-volume flags' (plural). Modeled as a list of ISO dates on which unusual volume was flagged. OPEN ITEM: the plan does not define the detection threshold or the exact record shape. See contracts/OPEN_ITEMS.md.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Unusual Volume Flags",
+          "type": "array"
+        },
+        "close_vs_vwap": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Section 14: 'Once Aux1 is confirmed as unadjusted VWAP, close-versus-VWAP positioning joins this block.' Null until WP1's Aux1 confirmation task (Section 19.1, WP1 acceptance criteria) concludes. Do not populate before that confirmation is recorded in docs/data_dictionary.md.",
+          "title": "Close Vs Vwap"
+        }
+      },
+      "required": [
+        "accumulation_distribution_line",
+        "on_balance_volume",
+        "up_down_volume_ratio",
+        "volume_at_price_concentration"
+      ],
+      "title": "MoneyFlowBlock",
+      "type": "object"
+    },
+    "Provenance": {
+      "additionalProperties": false,
+      "description": "Attached to every API response envelope (Section 11, Section 3.4).",
+      "properties": {
+        "as_of_date": {
+          "description": "Section 11: 'as_of_date' required on every endpoint.",
+          "format": "date",
+          "title": "As Of Date",
+          "type": "string"
+        },
+        "data_version": {
+          "description": "Section 11: 'data_version' required on every endpoint. Example form from Section 10.5: 'fdata-2026-07-30'.",
+          "title": "Data Version",
+          "type": "string"
+        },
+        "source": {
+          "description": "Section 11: 'source' required on every endpoint.",
+          "title": "Source",
+          "type": "string"
+        },
+        "freshness_status": {
+          "description": "Section 3.4: 'freshness status'. OPEN ITEM: the plan does not enumerate allowed values. See contracts/OPEN_ITEMS.md.",
+          "title": "Freshness Status",
+          "type": "string"
+        },
+        "warnings": {
+          "description": "Section 11: 'Quality and freshness warnings where applicable.'",
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "as_of_date",
+        "data_version",
+        "source",
+        "freshness_status"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "Timeframe": {
+      "description": "Daily, weekly, monthly per Section 12.1 and Section 12.2.\n\nOPEN ITEM: the plan never gives literal timeframe codes. \"1D\" appears\nonce, as an example value in the Section 10.1 price-bar JSON sample.\n\"1W\" and \"1M\" are inferred by this session to cover the weekly and\nmonthly views required by Section 12.1/12.2. See contracts/OPEN_ITEMS.md.",
+      "enum": [
+        "1D",
+        "1W",
+        "1M"
+      ],
+      "title": "Timeframe",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "symbol": {
+      "title": "Symbol",
+      "type": "string"
+    },
+    "timeframe": {
+      "$ref": "#/$defs/Timeframe"
+    },
+    "indicators": {
+      "items": {
+        "$ref": "#/$defs/IndicatorSeries"
+      },
+      "title": "Indicators",
+      "type": "array"
+    },
+    "money_flow": {
+      "$ref": "#/$defs/MoneyFlowBlock"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    }
+  },
+  "required": [
+    "symbol",
+    "timeframe",
+    "indicators",
+    "money_flow",
+    "provenance"
+  ],
+  "type": "object"
+}

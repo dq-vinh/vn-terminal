@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-terminal.local/contracts/0.1.0/screen_results_response.schema.json",
+  "title": "ScreenResultsResponse",
+  "$defs": {
+    "Provenance": {
+      "additionalProperties": false,
+      "description": "Attached to every API response envelope (Section 11, Section 3.4).",
+      "properties": {
+        "as_of_date": {
+          "description": "Section 11: 'as_of_date' required on every endpoint.",
+          "format": "date",
+          "title": "As Of Date",
+          "type": "string"
+        },
+        "data_version": {
+          "description": "Section 11: 'data_version' required on every endpoint. Example form from Section 10.5: 'fdata-2026-07-30'.",
+          "title": "Data Version",
+          "type": "string"
+        },
+        "source": {
+          "description": "Section 11: 'source' required on every endpoint.",
+          "title": "Source",
+          "type": "string"
+        },
+        "freshness_status": {
+          "description": "Section 3.4: 'freshness status'. OPEN ITEM: the plan does not enumerate allowed values. See contracts/OPEN_ITEMS.md.",
+          "title": "Freshness Status",
+          "type": "string"
+        },
+        "warnings": {
+          "description": "Section 11: 'Quality and freshness warnings where applicable.'",
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "as_of_date",
+        "data_version",
+        "source",
+        "freshness_status"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "ScreenResultItem": {
+      "additionalProperties": false,
+      "properties": {
+        "symbol": {
+          "title": "Symbol",
+          "type": "string"
+        },
+        "score": {
+          "title": "Score",
+          "type": "number"
+        },
+        "rank": {
+          "title": "Rank",
+          "type": "integer"
+        },
+        "passed_criteria": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Passed Criteria",
+          "type": "array"
+        },
+        "failed_criteria": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Failed Criteria",
+          "type": "array"
+        }
+      },
+      "required": [
+        "symbol",
+        "score",
+        "rank"
+      ],
+      "title": "ScreenResultItem",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "run_id": {
+      "title": "Run Id",
+      "type": "string"
+    },
+    "status": {
+      "examples": [
+        "completed",
+        "failed"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "run_date": {
+      "description": "Section 15: 'Store run date, strategy versions, parameters, and data version.'",
+      "format": "date",
+      "title": "Run Date",
+      "type": "string"
+    },
+    "strategy_versions": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Mapping of strategy_id to the version evaluated in this run.",
+      "title": "Strategy Versions",
+      "type": "object"
+    },
+    "parameters": {
+      "additionalProperties": true,
+      "description": "Effective universe_filters and any per-strategy parameters used for this run.",
+      "title": "Parameters",
+      "type": "object"
+    },
+    "results": {
+      "items": {
+        "$ref": "#/$defs/ScreenResultItem"
+      },
+      "title": "Results",
+      "type": "array"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    }
+  },
+  "required": [
+    "run_id",
+    "status",
+    "run_date",
+    "strategy_versions",
+    "parameters",
+    "results",
+    "provenance"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,27 @@
+{
+  "name": "vn-terminal-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VN Terminal Pro frontend: HTML/CSS/TypeScript workstation over contracts/openapi.yaml. See vn_terminal_multi_ai_development_plan.md v1.1, Section 12.",
+  "type": "module",
+  "scripts": {
+    "test:unit": "vitest run",
+    "test:e2e": "playwright test",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "lightweight-charts": "5.2.0"
+  },
+  "devDependencies": {
+    "typescript": "7.0.2",
+    "vitest": "4.1.10",
+    "@playwright/test": "1.57.0"
+  },
+  "_versionNotes": {
+    "lightweight-charts": "Section 7: 'Charting: TradingView Lightweight Charts.' Apache 2.0; attribution must be retained (Section 12.2).",
+    "typescript": "Section 7: 'Frontend logic: TypeScript or modern JavaScript ES modules.' Not itself required by the plan; pinned because contracts/schemas/json can be typed against via a generator the frontend specialist chooses.",
+    "vitest": "Section 7: 'Frontend tests: Vitest or equivalent.'",
+    "@playwright/test": "Section 7: 'End-to-end tests: Playwright.' Version aligned with the Python playwright package pinned in pyproject.toml (verified 2026-07-30) since both should exercise the same browser binaries; see contracts/OPEN_ITEMS.md.",
+    "bundler": "OPEN ITEM: the plan does not specify a frontend build tool (Vite, esbuild, or none). None is added here; see contracts/OPEN_ITEMS.md, section C."
+  }
+}

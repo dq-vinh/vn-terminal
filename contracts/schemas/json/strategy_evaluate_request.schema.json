@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-terminal.local/contracts/0.1.0/strategy_evaluate_request.schema.json",
+  "title": "StrategyEvaluateRequest",
+  "additionalProperties": false,
+  "properties": {
+    "symbol": {
+      "title": "Symbol",
+      "type": "string"
+    },
+    "strategy_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Strategy Ids",
+      "type": "array"
+    },
+    "as_of_date": {
+      "anyOf": [
+        {
+          "format": "date",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Defaults to the latest snapshot date when omitted.",
+      "title": "As Of Date"
+    }
+  },
+  "required": [
+    "symbol",
+    "strategy_ids"
+  ],
+  "type": "object"
+}

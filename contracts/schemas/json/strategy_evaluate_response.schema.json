@@ -1,0 +1,193 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-terminal.local/contracts/0.1.0/strategy_evaluate_response.schema.json",
+  "title": "StrategyEvaluateResponse",
+  "$defs": {
+    "Levels": {
+      "additionalProperties": false,
+      "description": "Section 10.5 'levels' object, reused by the AI fact bundle (10.6).",
+      "properties": {
+        "support": {
+          "items": {
+            "type": "number"
+          },
+          "title": "Support",
+          "type": "array"
+        },
+        "resistance": {
+          "items": {
+            "type": "number"
+          },
+          "title": "Resistance",
+          "type": "array"
+        },
+        "invalidation": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Invalidation"
+        }
+      },
+      "title": "Levels",
+      "type": "object"
+    },
+    "Provenance": {
+      "additionalProperties": false,
+      "description": "Attached to every API response envelope (Section 11, Section 3.4).",
+      "properties": {
+        "as_of_date": {
+          "description": "Section 11: 'as_of_date' required on every endpoint.",
+          "format": "date",
+          "title": "As Of Date",
+          "type": "string"
+        },
+        "data_version": {
+          "description": "Section 11: 'data_version' required on every endpoint. Example form from Section 10.5: 'fdata-2026-07-30'.",
+          "title": "Data Version",
+          "type": "string"
+        },
+        "source": {
+          "description": "Section 11: 'source' required on every endpoint.",
+          "title": "Source",
+          "type": "string"
+        },
+        "freshness_status": {
+          "description": "Section 3.4: 'freshness status'. OPEN ITEM: the plan does not enumerate allowed values. See contracts/OPEN_ITEMS.md.",
+          "title": "Freshness Status",
+          "type": "string"
+        },
+        "warnings": {
+          "description": "Section 11: 'Quality and freshness warnings where applicable.'",
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "as_of_date",
+        "data_version",
+        "source",
+        "freshness_status"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "StrategyEvaluationResult": {
+      "additionalProperties": false,
+      "properties": {
+        "symbol": {
+          "examples": [
+            "FPT"
+          ],
+          "title": "Symbol",
+          "type": "string"
+        },
+        "as_of_date": {
+          "format": "date",
+          "title": "As Of Date",
+          "type": "string"
+        },
+        "strategy_id": {
+          "examples": [
+            "minervini_trend_template"
+          ],
+          "title": "Strategy Id",
+          "type": "string"
+        },
+        "strategy_version": {
+          "examples": [
+            "1.0.0"
+          ],
+          "title": "Strategy Version",
+          "type": "string"
+        },
+        "signal": {
+          "description": "OPEN ITEM: only 'watch' is evidenced (Section 10.5 example). The plan does not enumerate the full signal vocabulary (for example whether 'buy', 'sell', 'hold' also exist). See contracts/OPEN_ITEMS.md.",
+          "examples": [
+            "watch"
+          ],
+          "title": "Signal",
+          "type": "string"
+        },
+        "score": {
+          "title": "Score",
+          "type": "integer"
+        },
+        "max_score": {
+          "title": "Max Score",
+          "type": "integer"
+        },
+        "passed_criteria": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Passed Criteria",
+          "type": "array"
+        },
+        "failed_criteria": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Failed Criteria",
+          "type": "array"
+        },
+        "levels": {
+          "$ref": "#/$defs/Levels"
+        },
+        "data_version": {
+          "examples": [
+            "fdata-2026-07-30"
+          ],
+          "title": "Data Version",
+          "type": "string"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "symbol",
+        "as_of_date",
+        "strategy_id",
+        "strategy_version",
+        "signal",
+        "score",
+        "max_score",
+        "levels",
+        "data_version"
+      ],
+      "title": "StrategyEvaluationResult",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "results": {
+      "items": {
+        "$ref": "#/$defs/StrategyEvaluationResult"
+      },
+      "title": "Results",
+      "type": "array"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    }
+  },
+  "required": [
+    "results",
+    "provenance"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,24 @@
+# Secrets
+.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+
+# Node
+node_modules/
+dist/
+
+# Runtime data (never source-controlled; see Section 20 and data/ dirs)
+data/raw/*
+data/snapshots/*
+data/canonical/*
+data/quality_reports/*
+!data/raw/.gitkeep
+!data/snapshots/.gitkeep
+!data/canonical/.gitkeep
+!data/quality_reports/.gitkeep
+
+# FData source is external and read-only; never vendored into the repo.

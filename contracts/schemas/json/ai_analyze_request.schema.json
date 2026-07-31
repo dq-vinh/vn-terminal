@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-terminal.local/contracts/0.1.0/ai_analyze_request.schema.json",
+  "title": "AIAnalyzeRequest",
+  "$defs": {
+    "AIModelConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "provider": {
+          "$ref": "#/$defs/AIProviderType"
+        },
+        "model": {
+          "examples": [
+            "deepseek/deepseek-v4-flash"
+          ],
+          "title": "Model",
+          "type": "string"
+        }
+      },
+      "required": [
+        "provider",
+        "model"
+      ],
+      "title": "AIModelConfig",
+      "type": "object"
+    },
+    "AIProviderType": {
+      "description": "Section 18.2 adapters list.",
+      "enum": [
+        "openrouter",
+        "ollama",
+        "openai_compatible"
+      ],
+      "title": "AIProviderType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "symbol": {
+      "title": "Symbol",
+      "type": "string"
+    },
+    "question": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Question"
+    },
+    "model_config": {
+      "$ref": "#/$defs/AIModelConfig",
+      "description": "Section 18.2 provider interface: 'analyze(fact_bundle, prompt_template, model_config) -> structured_response.' Python attribute named ai_model_config to avoid Pydantic's reserved `model_` attribute-name namespace; the wire (JSON) field name is `model_config`, matching the plan's own name for this argument. See contracts/OPEN_ITEMS.md."
+    }
+  },
+  "required": [
+    "symbol",
+    "model_config"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,31 @@
+{
+  "as_of_date": "2026-07-30",
+  "blocking_reasons": [
+    "missing_or_empty_category:cw"
+  ],
+  "content_sha256": "d0a16c1d00288fc92c8be86ef975eb3c3b8f42baf1006f8e0e2314087cecd37b",
+  "critical_quarantined_file_count": 0,
+  "data_version": "fdata-2026-07-30",
+  "generated_at": "2026-07-31T08:32:12.935830+07:00",
+  "historical_revision_count": 0,
+  "index_mapping_status": "blocked_no_authoritative_source",
+  "quality_issue_count": 1,
+  "quality_summary": {
+    "current_files": 3,
+    "file_count": 3,
+    "malformed_files": 0,
+    "nonpositive_price_files": 0,
+    "ohlc_violation_files": 0,
+    "record_count": 3,
+    "terminal_zero_volume_stock_files": 0,
+    "zero_volume_records": 0,
+    "zero_volume_records_all_categories": 0
+  },
+  "quarantined_files": [],
+  "record_count": 3,
+  "record_layout": "header-40-byte;record-<I9f-40-byte",
+  "snapshot_format_version": "1.0.0",
+  "source": "Fialda FData",
+  "source_file_count": 3,
+  "unmapped_numeric_index_count": 1
+}

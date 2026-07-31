@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-terminal.local/contracts/0.1.0/security_master.schema.json",
+  "title": "SecurityMaster",
+  "additionalProperties": false,
+  "properties": {
+    "symbol": {
+      "title": "Symbol",
+      "type": "string"
+    },
+    "isin": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Section 10.2: 'isin, when available.'",
+      "title": "Isin"
+    },
+    "exchange": {
+      "description": "See OPEN_ITEMS.md; same open-string treatment as PriceBar.exchange.",
+      "examples": [
+        "HOSE",
+        "HNX",
+        "UPCoM"
+      ],
+      "title": "Exchange",
+      "type": "string"
+    },
+    "security_type": {
+      "description": "See OPEN_ITEMS.md; same open-string treatment as PriceBar.security_type.",
+      "examples": [
+        "equity"
+      ],
+      "title": "Security Type",
+      "type": "string"
+    },
+    "company_name": {
+      "title": "Company Name",
+      "type": "string"
+    },
+    "sector": {
+      "title": "Sector",
+      "type": "string"
+    },
+    "industry": {
+      "title": "Industry",
+      "type": "string"
+    },
+    "listing_date": {
+      "format": "date",
+      "title": "Listing Date",
+      "type": "string"
+    },
+    "delisting_date": {
+      "anyOf": [
+        {
+          "format": "date",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Section 10.2 lists this field; only populated for delisted securities.",
+      "title": "Delisting Date"
+    },
+    "trading_status": {
+      "description": "OPEN ITEM: Section 3.2 mentions distinguishing 'suspended securities, and delisted securities'; WP2 (Section 22) speaks of 'Active/inactive status.' Whether trading_status is a three-plus-value set (active/suspended/delisted/...) or a two-value active/inactive flag with suspension detail held elsewhere is not settled by the plan. See contracts/OPEN_ITEMS.md.",
+      "examples": [
+        "active",
+        "suspended",
+        "delisted"
+      ],
+      "title": "Trading Status",
+      "type": "string"
+    },
+    "currency": {
+      "examples": [
+        "VND"
+      ],
+      "title": "Currency",
+      "type": "string"
+    },
+    "price_unit": {
+      "description": "Section 3.2: 'OHLC prices appear to be historically adjusted and expressed in thousands of VND.'",
+      "examples": [
+        "thousand_vnd"
+      ],
+      "title": "Price Unit",
+      "type": "string"
+    },
+    "lot_size": {
+      "minimum": 1,
+      "title": "Lot Size",
+      "type": "integer"
+    },
+    "source": {
+      "title": "Source",
+      "type": "string"
+    },
+    "valid_from": {
+      "format": "date",
+      "title": "Valid From",
+      "type": "string"
+    },
+    "valid_to": {
+      "anyOf": [
+        {
+          "format": "date",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Valid To"
+    },
+    "index_code": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Only populated for security_type=index entries sourced from EOD/index, whose 207 files are named with numeric codes (for example 0001.dat, 0500.dat) rather than symbols (Section 10.2). Not a literal field name from the plan; see contracts/OPEN_ITEMS.md.",
+      "title": "Index Code"
+    }
+  },
+  "required": [
+    "symbol",
+    "exchange",
+    "security_type",
+    "company_name",
+    "sector",
+    "industry",
+    "listing_date",
+    "trading_status",
+    "currency",
+    "price_unit",
+    "lot_size",
+    "source",
+    "valid_from"
+  ],
+  "type": "object"
+}

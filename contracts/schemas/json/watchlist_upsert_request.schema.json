@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-terminal.local/contracts/0.1.0/watchlist_upsert_request.schema.json",
+  "title": "WatchlistUpsertRequest",
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "symbols": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Symbols",
+      "type": "array"
+    }
+  },
+  "required": [
+    "name",
+    "symbols"
+  ],
+  "type": "object"
+}

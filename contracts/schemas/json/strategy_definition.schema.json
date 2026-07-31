@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vn-terminal.local/contracts/0.1.0/strategy_definition.schema.json",
+  "title": "StrategyDefinition",
+  "$defs": {
+    "ExecutionConvention": {
+      "description": "Section 16: \"Entry at next open or next close, explicitly selected.",
+      "enum": [
+        "next_open",
+        "next_close"
+      ],
+      "title": "ExecutionConvention",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "strategy_id": {
+      "title": "Strategy Id",
+      "type": "string"
+    },
+    "version": {
+      "examples": [
+        "1.0.0"
+      ],
+      "title": "Version",
+      "type": "string"
+    },
+    "title_vi": {
+      "title": "Title Vi",
+      "type": "string"
+    },
+    "title_en": {
+      "title": "Title En",
+      "type": "string"
+    },
+    "category": {
+      "description": "OPEN ITEM: examples are machine-readable slugs derived from the Section 13.1 family list, which the plan explicitly calls categories rather than a final catalogue. Left as an open string, not a closed enum. See contracts/OPEN_ITEMS.md.",
+      "examples": [
+        "trend_following",
+        "moving_average_alignment",
+        "breakout",
+        "momentum",
+        "relative_strength",
+        "volume_liquidity",
+        "mean_reversion",
+        "sideways_range",
+        "weinstein_stage_analysis",
+        "minervini_template",
+        "wyckoff_derived",
+        "pivot_support_resistance",
+        "composite_scorecard"
+      ],
+      "title": "Category",
+      "type": "string"
+    },
+    "timeframe": {
+      "description": "See Timeframe enum in common.py for the same 1D/1W/1M open item; kept as a plain string here since a strategy's stated timeframe could in principle combine several (e.g. weekly trend filter plus daily trigger), which the plan does not resolve. See contracts/OPEN_ITEMS.md.",
+      "title": "Timeframe",
+      "type": "string"
+    },
+    "required_fields": {
+      "description": "Section 10.4: input fields (e.g. price/volume series) the strategy needs.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Required Fields",
+      "type": "array"
+    },
+    "warmup_bars": {
+      "minimum": 0,
+      "title": "Warmup Bars",
+      "type": "integer"
+    },
+    "parameter_schema": {
+      "additionalProperties": true,
+      "description": "OPEN ITEM: the plan requires a 'parameter_schema' field but does not define its structure (e.g. JSON Schema for parameters vs. a simpler name-to-spec mapping). Typed as an open object. See contracts/OPEN_ITEMS.md.",
+      "title": "Parameter Schema",
+      "type": "object"
+    },
+    "entry_rule": {
+      "description": "OPEN ITEM: the plan does not specify whether rule fields are free text, a structured condition tree, or a small DSL. Typed as a string (human-readable specification) here, consistent with docs/strategy_catalogue.md being written in prose by the user per the P7 workflow. See contracts/OPEN_ITEMS.md.",
+      "title": "Entry Rule",
+      "type": "string"
+    },
+    "exit_rule": {
+      "title": "Exit Rule",
+      "type": "string"
+    },
+    "invalidation_rule": {
+      "title": "Invalidation Rule",
+      "type": "string"
+    },
+    "liquidity_rule": {
+      "title": "Liquidity Rule",
+      "type": "string"
+    },
+    "execution_convention": {
+      "$ref": "#/$defs/ExecutionConvention"
+    },
+    "evidence_fields": {
+      "description": "Section 10.4: fields this strategy must report into the AI fact bundle.",
+      "items": {
+        "type": "string"
+      },
+      "title": "Evidence Fields",
+      "type": "array"
+    },
+    "reference": {
+      "description": "Section 13.3: source of the rule, e.g. an AFL file path, a book citation, or the user's own judgment.",
+      "title": "Reference",
+      "type": "string"
+    }
+  },
+  "required": [
+    "strategy_id",
+    "version",
+    "title_vi",
+    "title_en",
+    "category",
+    "timeframe",
+    "required_fields",
+    "warmup_bars",
+    "parameter_schema",
+    "entry_rule",
+    "exit_rule",
+    "invalidation_rule",
+    "liquidity_rule",
+    "execution_convention",
+    "evidence_fields",
+    "reference"
+  ],
+  "type": "object"
+}

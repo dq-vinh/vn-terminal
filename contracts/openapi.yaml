@@ -1,0 +1,2537 @@
+# GENERATED FILE. Do not hand-edit.
+# Produced by contracts/build_openapi.py from contracts/schemas/models/.
+# To change this file, change the models or the path table in build_openapi.py, then re-run:
+#   python contracts/schemas/generate_json_schema.py
+#   python contracts/build_openapi.py
+# Any change here that is not a same-session fix is a contract change; follow contracts/OWNERSHIP.md Section 24.2.
+openapi: 3.1.0
+jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
+info:
+  title: VN Terminal Pro API
+  version: 0.1.0
+  description: Local, single-user API for VN Terminal Pro (Section 11 of vn_terminal_multi_ai_development_plan.md
+    v1.1). Binds to 127.0.0.1 only (Section 3.1, Section 20); never exposed publicly. This file is generated
+    by contracts/build_openapi.py from the Pydantic models in contracts/schemas/models/. Do not hand-edit.
+servers:
+- url: http://127.0.0.1:{port}
+  description: Local-only backend (Section 3.1).
+  variables:
+    port:
+      default: '8000'
+tags:
+- name: system
+  description: Health and status.
+- name: data
+  description: FData refresh, security universe, and OHLCV (WP1-WP3).
+- name: fundamentals
+  description: Financial statements and derived metrics (WP9).
+- name: quant
+  description: Indicators, strategies, screener, backtester (WP5-WP8).
+- name: ai
+  description: AI fact bundle and analysis gateway (WP10).
+- name: workspace
+  description: Watchlists and settings (WP12).
+paths:
+  /api/health:
+    get:
+      operationId: getHealth
+      summary: Application, database, and provider status
+      tags:
+      - system
+      responses:
+        '200':
+          description: Health status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /api/data/refresh:
+    post:
+      operationId: startDataRefresh
+      summary: Start atomic data refresh
+      tags:
+      - data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataRefreshRequest'
+      responses:
+        '202':
+          description: Refresh accepted and queued/running.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataRefreshResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/data/status:
+    get:
+      operationId: getDataStatus
+      summary: Refresh progress and latest good snapshot
+      tags:
+      - data
+      responses:
+        '200':
+          description: Refresh status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataStatusResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /api/symbols:
+    get:
+      operationId: listSymbols
+      summary: Search and filter the security universe
+      tags:
+      - data
+      parameters:
+      - $ref: '#/components/parameters/SymbolSearchQuery'
+      - $ref: '#/components/parameters/ExchangeFilterQuery'
+      - $ref: '#/components/parameters/SecurityTypeFilterQuery'
+      - $ref: '#/components/parameters/TradingStatusFilterQuery'
+      - $ref: '#/components/parameters/LimitQuery'
+      - $ref: '#/components/parameters/OffsetQuery'
+      responses:
+        '200':
+          description: Matching securities.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SymbolsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /api/bars/{symbol}:
+    get:
+      operationId: getBars
+      summary: Return validated OHLCV
+      tags:
+      - data
+      parameters:
+      - $ref: '#/components/parameters/SymbolPath'
+      - $ref: '#/components/parameters/TimeframeQuery'
+      - $ref: '#/components/parameters/StartDateQuery'
+      - $ref: '#/components/parameters/EndDateQuery'
+      responses:
+        '200':
+          description: Validated OHLCV bars.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BarsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/fundamentals/{symbol}:
+    get:
+      operationId: getFundamentals
+      summary: Financial statements and derived metrics
+      tags:
+      - fundamentals
+      parameters:
+      - $ref: '#/components/parameters/SymbolPath'
+      responses:
+        '200':
+          description: Financial observations and derived metrics.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FundamentalsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/indicators/{symbol}:
+    get:
+      operationId: getIndicators
+      summary: Deterministic indicators
+      tags:
+      - quant
+      parameters:
+      - $ref: '#/components/parameters/SymbolPath'
+      - $ref: '#/components/parameters/TimeframeQuery'
+      - $ref: '#/components/parameters/StartDateQuery'
+      - $ref: '#/components/parameters/EndDateQuery'
+      - $ref: '#/components/parameters/IndicatorIdsQuery'
+      responses:
+        '200':
+          description: Indicator series and the Section 14 money-flow block.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndicatorsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/strategies:
+    get:
+      operationId: listStrategies
+      summary: Strategy catalogue and versions
+      tags:
+      - quant
+      responses:
+        '200':
+          description: Strategy catalogue.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StrategiesResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /api/strategies/evaluate:
+    post:
+      operationId: evaluateStrategies
+      summary: Evaluate selected strategies
+      tags:
+      - quant
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StrategyEvaluateRequest'
+      responses:
+        '200':
+          description: Evaluation results.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StrategyEvaluateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/screen:
+    post:
+      operationId: startScreen
+      summary: Run market-wide screening
+      tags:
+      - quant
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScreenRequest'
+      responses:
+        '202':
+          description: Screen accepted as a background job (Section 15).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScreenStartResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /api/screen/{run_id}:
+    get:
+      operationId: getScreenResults
+      summary: Return background-screen results
+      tags:
+      - quant
+      parameters:
+      - $ref: '#/components/parameters/RunIdPath'
+      responses:
+        '200':
+          description: Screen results, reproducible per Section 15.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScreenResultsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/backtest:
+    post:
+      operationId: startBacktest
+      summary: Start a reproducible backtest
+      tags:
+      - quant
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BacktestRequest'
+      responses:
+        '202':
+          description: Backtest accepted (Section 16).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BacktestStartResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /api/backtest/{run_id}:
+    get:
+      operationId: getBacktestResults
+      summary: Return trades, metrics, and warnings
+      tags:
+      - quant
+      parameters:
+      - $ref: '#/components/parameters/RunIdPath'
+      responses:
+        '200':
+          description: Trades, equity/drawdown curves, and metrics.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BacktestResultsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/ai/analyze:
+    post:
+      operationId: analyzeWithAI
+      summary: Explain a server-created fact bundle
+      tags:
+      - ai
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AIAnalyzeRequest'
+      responses:
+        '200':
+          description: Structured AI response (Section 18.3) plus the fact bundle it was built from.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AIAnalyzeResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /api/watchlists:
+    get:
+      operationId: listWatchlists
+      summary: Retrieve watchlists
+      tags:
+      - workspace
+      responses:
+        '200':
+          description: Saved watchlists.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WatchlistsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /api/watchlists/{id}:
+    put:
+      operationId: saveWatchlist
+      summary: Save a watchlist
+      tags:
+      - workspace
+      parameters:
+      - $ref: '#/components/parameters/WatchlistIdPath'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WatchlistUpsertRequest'
+      responses:
+        '200':
+          description: Saved watchlist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WatchlistResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /api/settings:
+    get:
+      operationId: getSettings
+      summary: Retrieve local settings
+      tags:
+      - workspace
+      responses:
+        '200':
+          description: Local settings.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SettingsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    put:
+      operationId: saveSettings
+      summary: Save local settings
+      tags:
+      - workspace
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SettingsUpdateRequest'
+      responses:
+        '200':
+          description: Saved settings.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SettingsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+components:
+  schemas:
+    AIAnalyzeRequest:
+      additionalProperties: false
+      properties:
+        symbol:
+          title: Symbol
+          type: string
+        question:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          title: Question
+        model_config:
+          $ref: '#/components/schemas/AIModelConfig'
+          description: 'Section 18.2 provider interface: ''analyze(fact_bundle, prompt_template, model_config)
+            -> structured_response.'' Python attribute named ai_model_config to avoid Pydantic''s reserved
+            `model_` attribute-name namespace; the wire (JSON) field name is `model_config`, matching
+            the plan''s own name for this argument. See contracts/OPEN_ITEMS.md.'
+      required:
+      - symbol
+      - model_config
+      title: AIAnalyzeRequest
+      type: object
+    AIAnalyzeResponse:
+      additionalProperties: false
+      properties:
+        analysis:
+          $ref: '#/components/schemas/StructuredAIResponse'
+        fact_bundle:
+          $ref: '#/components/schemas/AIFactBundle'
+          description: 'Included so the frontend AI panel (Section 12.5, WP11 acceptance criteria: ''User
+            can inspect facts behind the response'') can show the underlying facts without a second round
+            trip. Not explicitly named as a response field by Section 11; see contracts/OPEN_ITEMS.md.'
+        provenance:
+          $ref: '#/components/schemas/Provenance'
+      required:
+      - analysis
+      - fact_bundle
+      - provenance
+      title: AIAnalyzeResponse
+      type: object
+    AIFactBundle:
+      additionalProperties: false
+      properties:
+        symbol:
+          description: 'Section 10.6: ''Symbol identity and as-of date.'''
+          title: Symbol
+          type: string
+        as_of_date:
+          format: date
+          title: As Of Date
+          type: string
+        price_summary:
+          additionalProperties: true
+          description: 'Section 10.6: ''Price and volume summary.'' OPEN ITEM: no internal shape given
+            by the plan. Typed as an open object. See contracts/OPEN_ITEMS.md.'
+          title: Price Summary
+          type: object
+        indicators:
+          additionalProperties: true
+          description: 'Section 10.6: ''Deterministic indicators.'' OPEN ITEM: Section 14 names the indicator
+            list but not the fact-bundle serialization shape. Typed as an open object. See contracts/OPEN_ITEMS.md.'
+          title: Indicators
+          type: object
+        money_flow:
+          $ref: '#/components/schemas/MoneyFlowBlock'
+          description: 'Section 10.6: ''Money-flow and accumulation metrics from Section 14.'''
+        strategy_results:
+          description: 'Section 10.6: ''Strategy results and failed criteria.'''
+          items:
+            $ref: '#/components/schemas/StrategyEvaluationResult'
+          title: Strategy Results
+          type: array
+        financial_summary:
+          additionalProperties: true
+          description: 'Section 10.6: ''Financial history and growth metrics.'' OPEN ITEM: no internal
+            shape given by the plan. Typed as an open object. See contracts/OPEN_ITEMS.md.'
+          title: Financial Summary
+          type: object
+        levels:
+          $ref: '#/components/schemas/Levels'
+          description: 'Section 10.6: ''Support, resistance, and invalidation candidates.'''
+        data_quality:
+          additionalProperties: true
+          description: 'Section 10.6: ''Data freshness and quality warnings.'' Expected to carry a freshness_status
+            and a list of QualityIssue entries (see common.QualityIssue), but the plan does not fix an
+            exact shape for this bullet either. Typed as an open object. See contracts/OPEN_ITEMS.md.'
+          title: Data Quality
+          type: object
+        sources:
+          description: 'Section 10.6: ''Source URLs...'' — modeled as a list of URL strings.'
+          items:
+            type: string
+          title: Sources
+          type: array
+        calculation_definitions:
+          description: 'Section 10.6: ''...and calculation definitions.'' — modeled as a list of human-readable
+            definition strings, matching the per-indicator documentation required by Section 14 (formula,
+            input price, adjustment convention, warm-up period, missing-value behavior, comparison reference,
+            numerical tolerance).'
+          items:
+            type: string
+          title: Calculation Definitions
+          type: array
+      required:
+      - symbol
+      - as_of_date
+      - price_summary
+      - indicators
+      - money_flow
+      - financial_summary
+      - levels
+      - data_quality
+      title: AIFactBundle
+      type: object
+    AIModelConfig:
+      additionalProperties: false
+      properties:
+        provider:
+          $ref: '#/components/schemas/AIProviderType'
+        model:
+          examples:
+          - deepseek/deepseek-v4-flash
+          title: Model
+          type: string
+      required:
+      - provider
+      - model
+      title: AIModelConfig
+      type: object
+    AIProviderType:
+      description: Section 18.2 adapters list.
+      enum:
+      - openrouter
+      - ollama
+      - openai_compatible
+      title: AIProviderType
+      type: string
+    BacktestMetrics:
+      additionalProperties: false
+      description: Section 16 'Required outputs' list, excluding trade/equity/drawdown series.
+      properties:
+        cagr:
+          anyOf:
+          - type: number
+          - type: 'null'
+          default: null
+          title: Cagr
+        annualized_return:
+          anyOf:
+          - type: number
+          - type: 'null'
+          default: null
+          title: Annualized Return
+        volatility:
+          title: Volatility
+          type: number
+        sharpe:
+          description: Section 16 requires this 'with definitions.'
+          title: Sharpe
+          type: number
+        sortino:
+          description: Section 16 requires this 'with definitions.'
+          title: Sortino
+          type: number
+        max_drawdown:
+          title: Max Drawdown
+          type: number
+        win_rate:
+          title: Win Rate
+          type: number
+        profit_factor:
+          title: Profit Factor
+          type: number
+        average_holding_period_days:
+          title: Average Holding Period Days
+          type: number
+        turnover:
+          title: Turnover
+          type: number
+        exposure:
+          title: Exposure
+          type: number
+        benchmark_comparison:
+          additionalProperties: true
+          description: 'OPEN ITEM: Section 16 requires ''Benchmark comparison'' without a defined shape.
+            Typed as an open object. See contracts/OPEN_ITEMS.md.'
+          title: Benchmark Comparison
+          type: object
+      required:
+      - volatility
+      - sharpe
+      - sortino
+      - max_drawdown
+      - win_rate
+      - profit_factor
+      - average_holding_period_days
+      - turnover
+      - exposure
+      - benchmark_comparison
+      title: BacktestMetrics
+      type: object
+    BacktestPeriod:
+      additionalProperties: false
+      properties:
+        start_date:
+          format: date
+          title: Start Date
+          type: string
+        end_date:
+          format: date
+          title: End Date
+          type: string
+      required:
+      - start_date
+      - end_date
+      title: BacktestPeriod
+      type: object
+    BacktestRequest:
+      additionalProperties: false
+      description: Section 16 'Required controls' list.
+      properties:
+        strategy_id:
+          title: Strategy Id
+          type: string
+        symbol_universe:
+          description: 'OPEN ITEM: the plan does not say whether a backtest targets an explicit symbol
+            list, a named universe, or the full market. Modeled as an explicit list of symbols; a full-market
+            run is expressed by passing every eligible symbol from /api/symbols. See contracts/OPEN_ITEMS.md.'
+          items:
+            type: string
+          title: Symbol Universe
+          type: array
+        entry_convention:
+          $ref: '#/components/schemas/ExecutionConvention'
+        exit_convention:
+          description: 'OPEN ITEM: Section 16 requires an ''Exit convention'' but, unlike entry convention,
+            does not give a closed list. See contracts/OPEN_ITEMS.md.'
+          title: Exit Convention
+          type: string
+        transaction_cost:
+          minimum: 0
+          title: Transaction Cost
+          type: number
+        slippage:
+          minimum: 0
+          title: Slippage
+          type: number
+        position_size:
+          additionalProperties: true
+          description: 'OPEN ITEM: Section 16 requires ''Position size'' without specifying whether it
+            is a fixed amount, a percentage of equity, or a volatility-scaled rule. Typed as an open object.
+            See contracts/OPEN_ITEMS.md.'
+          title: Position Size
+          type: object
+        max_concurrent_positions:
+          minimum: 1
+          title: Max Concurrent Positions
+          type: integer
+        liquidity_constraint:
+          additionalProperties: true
+          description: 'OPEN ITEM: Section 16 requires a ''Liquidity constraint'' without a defined shape.
+            Typed as an open object. See contracts/OPEN_ITEMS.md.'
+          title: Liquidity Constraint
+          type: object
+        price_adjustment_convention:
+          description: 'OPEN ITEM: Section 16 requires a ''Price-adjustment convention'' without an enumerated
+            set of conventions. See contracts/OPEN_ITEMS.md.'
+          title: Price Adjustment Convention
+          type: string
+        benchmark:
+          description: 'Section 16: ''Benchmark.'' Typically a security_master symbol/index_code.'
+          title: Benchmark
+          type: string
+        in_sample_period:
+          $ref: '#/components/schemas/BacktestPeriod'
+        out_of_sample_period:
+          anyOf:
+          - $ref: '#/components/schemas/BacktestPeriod'
+          - type: 'null'
+          default: null
+          description: 'Section 16: ''In-sample and out-of-sample periods.'''
+      required:
+      - strategy_id
+      - symbol_universe
+      - entry_convention
+      - exit_convention
+      - transaction_cost
+      - slippage
+      - position_size
+      - max_concurrent_positions
+      - liquidity_constraint
+      - price_adjustment_convention
+      - benchmark
+      - in_sample_period
+      title: BacktestRequest
+      type: object
+    BacktestResultsResponse:
+      additionalProperties: false
+      properties:
+        run_id:
+          title: Run Id
+          type: string
+        status:
+          examples:
+          - completed
+          - failed
+          title: Status
+          type: string
+        trades:
+          items:
+            $ref: '#/components/schemas/Trade'
+          title: Trades
+          type: array
+        equity_curve:
+          items:
+            $ref: '#/components/schemas/EquityCurvePoint'
+          title: Equity Curve
+          type: array
+        drawdown_curve:
+          items:
+            $ref: '#/components/schemas/DrawdownCurvePoint'
+          title: Drawdown Curve
+          type: array
+        metrics:
+          $ref: '#/components/schemas/BacktestMetrics'
+        warnings:
+          items:
+            type: string
+          title: Warnings
+          type: array
+        data_version:
+          title: Data Version
+          type: string
+        strategy_version:
+          title: Strategy Version
+          type: string
+        provenance:
+          $ref: '#/components/schemas/Provenance'
+      required:
+      - run_id
+      - status
+      - trades
+      - equity_curve
+      - drawdown_curve
+      - metrics
+      - data_version
+      - strategy_version
+      - provenance
+      title: BacktestResultsResponse
+      type: object
+    BacktestStartResponse:
+      additionalProperties: false
+      properties:
+        run_id:
+          title: Run Id
+          type: string
+        status:
+          description: 'OPEN ITEM: see contracts/OPEN_ITEMS.md, ''Job/health status vocabulary.'''
+          examples:
+          - queued
+          - running
+          title: Status
+          type: string
+        provenance:
+          $ref: '#/components/schemas/Provenance'
+      required:
+      - run_id
+      - status
+      - provenance
+      title: BacktestStartResponse
+      type: object
+    BarsResponse:
+      additionalProperties: false
+      properties:
+        symbol:
+          title: Symbol
+          type: string
+        timeframe:
+          $ref: '#/components/schemas/Timeframe'
+        bars:
+          items:
+            $ref: '#/components/schemas/PriceBar'
+          title: Bars
+          type: array
+        provenance:
+          $ref: '#/components/schemas/Provenance'
+      required:
+      - symbol
+      - timeframe
+      - bars
+      - provenance
+      title: BarsResponse
+      type: object
+    DataRefreshRequest:
+      additionalProperties: false
+      properties:
+        force:
+          default: false
+          description: 'OPEN ITEM: not named by the plan. Added so a caller can request a refresh even
+            if one recently succeeded. See contracts/OPEN_ITEMS.md.'
+          title: Force
+          type: boolean
+      title: DataRefreshRequest
+      type: object
+    DataRefreshResponse:
+      additionalProperties: false
+      properties:
+        run_id:
+          title: Run Id
+          type: string
+        status:
+          description: 'OPEN ITEM: see contracts/OPEN_ITEMS.md, ''Job/health status vocabulary.'''
+          examples:
+          - queued
+          - running
+          title: Status
+          type: string
+        started_at:
+          format: date-time
+          title: Started At
+          type: string
+        provenance:
+          $ref: '#/components/schemas/Provenance'
+      required:
+      - run_id
+      - status
+      - started_at
+      - provenance
+      title: DataRefreshResponse
+      type: object
+    DataStatusResponse:
+      additionalProperties: false
+      properties:
+        run_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          title: Run Id
+        status:
+          description: 'OPEN ITEM: see contracts/OPEN_ITEMS.md, ''Job/health status vocabulary.'''
+          examples:
+          - queued
+          - running
+          - completed
+          - failed
+          title: Status
+          type: string
+        progress_pct:
+          anyOf:
+          - maximum: 100
+            minimum: 0
+            type: number
+          - type: 'null'
+          default: null
+          title: Progress Pct
+        latest_good_snapshot:
+          anyOf:
+          - $ref: '#/components/schemas/SnapshotInfo'
+          - type: 'null'
+          default: null
+          description: 'Section 3.4: ''The previous validated data snapshot remains available if a refresh
+            fails.'''
+        issues:
+          items:
+            type: string
+          title: Issues
+          type: array
+        provenance:
+          $ref: '#/components/schemas/Provenance'
+      required:
+      - status
+      - provenance
+      title: DataStatusResponse
+      type: object
+    DatabaseStatus:
+      additionalProperties: false
+      properties:
+        connected:
+          title: Connected
+          type: boolean
+        latest_snapshot_date:
+          anyOf:
+          - format: date
+            type: string
+          - type: 'null'
+          default: null
+          title: Latest Snapshot Date
+      required:
+      - connected
+      title: DatabaseStatus
+      type: object
+    DerivedMetric:
+      additionalProperties: false
+      description: 'Section 17: ''Calculate growth and margins deterministically.''
+
+
+        OPEN ITEM: the plan lists panel content (Section 17, "Initial panels")
+
+        but not a literal derived-metric record shape. This mirrors
+
+        FinancialObservation''s shape closely so both can be rendered the same
+
+        way in the fundamentals panel (Section 12.3).'
+      properties:
+        symbol:
+          title: Symbol
+          type: string
+        period_end:
+          format: date
+          title: Period End
+          type: string
+        metric_code:
+          examples:
+          - revenue_yoy_growth
+          - gross_margin
+          - roe
+          - roa
+          - pe
+          - pb
+          title: Metric Code
+          type: string
+        metric_label_vi:
+          title: Metric Label Vi
+          type: string
+        value:
+          title: Value
+          type: number
+        unit:
+          title: Unit
+          type: string
+      required:
+      - symbol
+      - period_end
+      - metric_code
+      - metric_label_vi
+      - value
+      - unit
+      title: DerivedMetric
+      type: object
+    DrawdownCurvePoint:
+      additionalProperties: false
+      properties:
+        trading_date:
+          format: date
+          title: Trading Date
+          type: string
+        drawdown:
+          title: Drawdown
+          type: number
+      required:
+      - trading_date
+      - drawdown
+      title: DrawdownCurvePoint
+      type: object
+    EquityCurvePoint:
+      additionalProperties: false
+      properties:
+        trading_date:
+          format: date
+          title: Trading Date
+          type: string
+        equity:
+          title: Equity
+          type: number
+      required:
+      - trading_date
+      - equity
+      title: EquityCurvePoint
+      type: object
+    ErrorResponse:
+      additionalProperties: false
+      description: Explicit error response (Section 11) for non-validation errors.
+      properties:
+        error_code:
+          description: 'OPEN ITEM: the plan requires ''explicit error responses'' (Section 11) but does
+            not name an error vocabulary. See contracts/OPEN_ITEMS.md.'
+          title: Error Code
+          type: string
+        message:
+          title: Message
+          type: string
+        details:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          default: null
+          title: Details
+      required:
+      - error_code
+      - message
+      title: ErrorResponse
+      type: object
+    ExecutionConvention:
+      description: 'Section 16: "Entry at next open or next close, explicitly selected.'
+      enum:
+      - next_open
+      - next_close
+      title: ExecutionConvention
+      type: string
+    FinancialObservation:
+      additionalProperties: false
+      properties:
+        symbol:
+          title: Symbol
+          type: string
+        period_end:
+          format: date
+          title: Period End
+          type: string
+        period_type:
+          $ref: '#/components/schemas/PeriodType'
+        statement_type:
+          description: 'OPEN ITEM: Section 10.3 names the field but does not enumerate statement types.
+            Examples given here follow standard financial-statement categories implied by Section 17 (''Financial
+            statements'') but are not a plan-given closed list. See contracts/OPEN_ITEMS.md.'
+          examples:
+          - income_statement
+          - balance_sheet
+          - cash_flow_statement
+          title: Statement Type
+          type: string
+        metric_code:
+          title: Metric Code
+          type: string
+        metric_label_vi:
+          title: Metric Label Vi
+          type: string
+        value:
+          title: Value
+          type: number
+        currency:
+          examples:
+          - VND
+          title: Currency
+          type: string
+        unit:
+          description: 'OPEN ITEM: Section 17 requires recording ''currency and units'' but the plan does
+            not give a unit vocabulary (for example whether values are in VND, thousand VND, or million
+            VND). See contracts/OPEN_ITEMS.md.'
+          title: Unit
+          type: string
+        consolidated:
+          description: 'Section 17: ''Distinguish consolidated and separate statements.'''
+          title: Consolidated
+          type: boolean
+        restatement_version:
+          description: 'OPEN ITEM: Section 10.3 names ''restatement_version'' and Section 17 requires
+            ''Preserve restatements'' but the plan does not say whether this is an incrementing integer
+            or a string tag. Modeled as an integer counter starting at 1 in this session. See contracts/OPEN_ITEMS.md.'
+          minimum: 1
+          title: Restatement Version
+          type: integer
+        publication_date:
+          anyOf:
+          - format: date
+            type: string
+          - type: 'null'
+          default: null
+          description: 'Section 17 degraded mode: nullable. When null, this observation must be excluded
+            from historical backtests (Section 16: ''No use of later financial-publication information...
+            affected fundamental inputs are excluded from backtests rather than assumed'') and must carry
+            an explicit warning at the point of use.'
+          title: Publication Date
+        source_url:
+          title: Source Url
+          type: string
+        ingested_at:
+          format: date-time
+          title: Ingested At
+          type: string
+      required:
+      - symbol
+      - period_end
+      - period_type
+      - statement_type
+      - metric_code
+      - metric_label_vi
+      - value
+      - currency
+      - unit
+      - consolidated
+      - restatement_version
+      - source_url
+      - ingested_at
+      title: FinancialObservation
+      type: object
+    FundamentalsResponse:
+      additionalProperties: false
+      properties:
+        symbol:
+          title: Symbol
+          type: string
+        observations:
+          items:
+            $ref: '#/components/schemas/FinancialObservation'
+          title: Observations
+          type: array
+        derived_metrics:
+          items:
+            $ref: '#/components/schemas/DerivedMetric'
+          title: Derived Metrics
+          type: array
+        provenance:
+          $ref: '#/components/schemas/Provenance'
+      required:
+      - symbol
+      - observations
+      - provenance
+      title: FundamentalsResponse
+      type: object
+    HTTPValidationError:
+      additionalProperties: false
+      description: 'FastAPI''s standard 422 request-validation error envelope.
+
+
+        Traceable to Section 7 (''Backend: Python FastAPI''); this is FastAPI''s
+
+        own documented default shape, not an invented one.'
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/HTTPValidationErrorItem'
+          title: Detail
+          type: array
+      required:
+      - detail
+      title: HTTPValidationError
+      type: object
+    HTTPValidationErrorItem:
+      additionalProperties: false
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          title: Loc
+          type: array
+        msg:
+          title: Msg
+          type: string
+        type:
+          title: Type
+          type: string
+      required:
+      - loc
+      - msg
+      - type
+      title: HTTPValidationErrorItem
+      type: object
+    HealthResponse:
+      additionalProperties: false
+      properties:
+        status:
+          description: 'OPEN ITEM: Section 11 requires an ''Application, database, and provider status''
+            but does not give a closed vocabulary. See contracts/OPEN_ITEMS.md, ''Job/health status vocabulary.'''
+          examples:
+          - ok
+          title: Status
+          type: string
+        database:
+          $ref: '#/components/schemas/DatabaseStatus'
+        providers:
+          items:
+            $ref: '#/components/schemas/ProviderStatus'
+          title: Providers
+          type: array
+        provenance:
+          $ref: '#/components/schemas/Provenance'
+      required:
+      - status
+      - database
+      - provenance
+      title: HealthResponse
+      type: object
+    IndicatorPoint:
+      additionalProperties: false
+      properties:
+        trading_date:
+          format: date
+          title: Trading Date
+          type: string
+        value:
+          anyOf:
+          - type: number
+          - type: 'null'
+          default: null
+          description: 'Section 14: ''Missing-value behaviour'' must be documented per indicator; null
+            during warm-up.'
+          title: Value
+      required:
+      - trading_date
+      title: IndicatorPoint
+      type: object
+    IndicatorSeries:
+      additionalProperties: false
+      properties:
+        indicator_id:
+          description: Section 14 initial indicator list, given as machine-readable ids.
+          examples:
+          - sma
+          - ema
+          - rsi
+          - macd
+          - atr
+          - bollinger_bands
+          - rolling_high
+          - rolling_low
+          - rate_of_change
+          - relative_strength_vnindex
+          - relative_strength_sector
+          - volume_sma
+          - volume_price_trend
+          - pivot_levels
+          - rolling_volatility
+          - drawdown
+          title: Indicator Id
+          type: string
+        values:
+          items:
+            $ref: '#/components/schemas/IndicatorPoint'
+          title: Values
+          type: array
+      required:
+      - indicator_id
+      - values
+      title: IndicatorSeries
+      type: object
+    IndicatorsResponse:
+      additionalProperties: false
+      properties:
+        symbol:
+          title: Symbol
+          type: string
+        timeframe:
+          $ref: '#/components/schemas/Timeframe'
+        indicators:
+          items:
+            $ref: '#/components/schemas/IndicatorSeries'
+          title: Indicators
+          type: array
+        money_flow:
+          $ref: '#/components/schemas/MoneyFlowBlock'
+        provenance:
+          $ref: '#/components/schemas/Provenance'
+      required:
+      - symbol
+      - timeframe
+      - indicators
+      - money_flow
+      - provenance
+      title: IndicatorsResponse
+      type: object
+    Levels:
+      additionalProperties: false
+      description: Section 10.5 'levels' object, reused by the AI fact bundle (10.6).
+      properties:
+        support:
+          items:
+            type: number
+          title: Support
+          type: array
+        resistance:
+          items:
+            type: number
+          title: Resistance
+          type: array
+        invalidation:
+          anyOf:
+          - type: number
+          - type: 'null'
+          default: null
+          title: Invalidation
+      title: Levels
+      type: object
+    MoneyFlowBlock:
+      additionalProperties: false
+      properties:
+        accumulation_distribution_line:
+          description: 'Section 14: accumulation/distribution line, latest value.'
+          title: Accumulation Distribution Line
+          type: number
+        on_balance_volume:
+          description: 'Section 14: on-balance volume, latest value.'
+          title: On Balance Volume
+          type: number
+        up_down_volume_ratio:
+          description: 'Section 14: up-day versus down-day volume ratio.'
+          title: Up Down Volume Ratio
+          type: number
+        volume_at_price_concentration:
+          additionalProperties: true
+          description: 'OPEN ITEM: Section 14 names ''volume-at-price concentration'' as a member of this
+            block but does not define its shape (for example a price-to-volume histogram, or a single
+            concentration score). Typed as an open object. See contracts/OPEN_ITEMS.md.'
+          title: Volume At Price Concentration
+          type: object
+        unusual_volume_flags:
+          description: 'Section 14: ''unusual-volume flags'' (plural). Modeled as a list of ISO dates
+            on which unusual volume was flagged. OPEN ITEM: the plan does not define the detection threshold
+            or the exact record shape. See contracts/OPEN_ITEMS.md.'
+          items:
+            type: string
+          title: Unusual Volume Flags
+          type: array
+        close_vs_vwap:
+          anyOf:
+          - type: number
+          - type: 'null'
+          default: null
+          description: 'Section 14: ''Once Aux1 is confirmed as unadjusted VWAP, close-versus-VWAP positioning
+            joins this block.'' Null until WP1''s Aux1 confirmation task (Section 19.1, WP1 acceptance
+            criteria) concludes. Do not populate before that confirmation is recorded in docs/data_dictionary.md.'
+          title: Close Vs Vwap
+      required:
+      - accumulation_distribution_line
+      - on_balance_volume
+      - up_down_volume_ratio
+      - volume_at_price_concentration
+      title: MoneyFlowBlock
+      type: object
+    PeriodType:
+      description: 'Section 10.3: "period_type, quarter or year.'
+      enum:
+      - quarter
+      - year
+      title: PeriodType
+      type: string
+    PriceBar:
+      additionalProperties: false
+      properties:
+        symbol:
+          examples:
+          - FPT
+          title: Symbol
+          type: string
+        exchange:
+          description: 'Section 1/10.1: evidenced values are HOSE, HNX, UPCoM. Left as an open string
+            rather than a closed enum; see contracts/OPEN_ITEMS.md.'
+          examples:
+          - HOSE
+          - HNX
+          - UPCoM
+          title: Exchange
+          type: string
+        security_type:
+          description: 'OPEN ITEM: candidate values inferred from WP1''s four FData category directories
+            (stock, index, der, cw) mapping to equity/index/derivative/warrant, plus ''bond'' per the
+            Section 3.2 assumption text, which has no confirmed FData source directory. Section 19.2 also
+            notes ''Mixed security types in the stock directory,'' so directory alone does not determine
+            this value. Left as an open string; see contracts/OPEN_ITEMS.md.'
+          examples:
+          - equity
+          title: Security Type
+          type: string
+        timeframe:
+          $ref: '#/components/schemas/Timeframe'
+          examples:
+          - 1D
+        trading_date:
+          format: date
+          title: Trading Date
+          type: string
+        timezone:
+          default: Asia/Ho_Chi_Minh
+          description: Section 10.1 example value; VN Terminal Pro is single-market.
+          title: Timezone
+          type: string
+        open:
+          description: Thousands of VND, back-adjusted (Section 19.1).
+          title: Open
+          type: number
+        high:
+          description: Thousands of VND, back-adjusted (Section 19.1).
+          title: High
+          type: number
+        low:
+          description: Thousands of VND, back-adjusted (Section 19.1).
+          title: Low
+          type: number
+        close:
+          description: Thousands of VND, back-adjusted (Section 19.1).
+          title: Close
+          type: number
+        volume:
+          description: Shares (Section 19.1).
+          minimum: 0
+          title: Volume
+          type: integer
+        adjustment_status:
+          description: 'OPEN ITEM: only ''adjusted_unknown_method'' is evidenced (Section 10.1 example).
+            The plan does not enumerate the full set of possible values. See contracts/OPEN_ITEMS.md.'
+          examples:
+          - adjusted_unknown_method
+          title: Adjustment Status
+          type: string
+        source:
+          examples:
+          - Fialda FData
+          title: Source
+          type: string
+        source_file:
+          examples:
+          - C:\FDATA\AmiBroker\EOD\stock\FPT.dat
+          title: Source File
+          type: string
+        ingested_at:
+          format: date-time
+          title: Ingested At
+          type: string
+        quality_status:
+          description: 'OPEN ITEM: only ''valid'' is evidenced (Section 10.1 example). See contracts/OPEN_ITEMS.md.'
+          examples:
+          - valid
+          title: Quality Status
+          type: string
+      required:
+      - symbol
+      - exchange
+      - security_type
+      - timeframe
+      - trading_date
+      - open
+      - high
+      - low
+      - close
+      - volume
+      - adjustment_status
+      - source
+      - source_file
+      - ingested_at
+      - quality_status
+      title: PriceBar
+      type: object
+    Provenance:
+      additionalProperties: false
+      description: Attached to every API response envelope (Section 11, Section 3.4).
+      properties:
+        as_of_date:
+          description: 'Section 11: ''as_of_date'' required on every endpoint.'
+          format: date
+          title: As Of Date
+          type: string
+        data_version:
+          description: 'Section 11: ''data_version'' required on every endpoint. Example form from Section
+            10.5: ''fdata-2026-07-30''.'
+          title: Data Version
+          type: string
+        source:
+          description: 'Section 11: ''source'' required on every endpoint.'
+          title: Source
+          type: string
+        freshness_status:
+          description: 'Section 3.4: ''freshness status''. OPEN ITEM: the plan does not enumerate allowed
+            values. See contracts/OPEN_ITEMS.md.'
+          title: Freshness Status
+          type: string
+        warnings:
+          description: 'Section 11: ''Quality and freshness warnings where applicable.'''
+          items:
+            type: string
+          title: Warnings
+          type: array
+      required:
+      - as_of_date
+      - data_version
+      - source
+      - freshness_status
+      title: Provenance
+      type: object
+    ProviderStatus:
+      additionalProperties: false
+      properties:
+        name:
+          examples:
+          - openrouter
+          - ollama
+          title: Name
+          type: string
+        provider_type:
+          $ref: '#/components/schemas/AIProviderType'
+        available:
+          title: Available
+          type: boolean
+      required:
+      - name
+      - provider_type
+      - available
+      title: ProviderStatus
+      type: object
+    QualityIssue:
+      additionalProperties: false
+      description: 'One data-quality finding, per the checks enumerated in Section 19.2.
+
+
+        OPEN ITEM: the plan lists fourteen automated checks and four severity
+
+        levels (Section 19.2) but does not give a literal issue-record schema.
+
+        This shape is this session''s proposal for representing one finding; see
+
+        contracts/OPEN_ITEMS.md.'
+      properties:
+        code:
+          description: Identifier for which of the fourteen Section 19.2 checks produced this issue, for
+            example 'header_count_mismatch' or 'ohlc_violation'. Exact vocabulary is an open item.
+          title: Code
+          type: string
+        severity:
+          $ref: '#/components/schemas/Severity'
+        message:
+          title: Message
+          type: string
+        symbol:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          description: Affected symbol, when the issue is symbol-scoped.
+          title: Symbol
+        source_file:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          description: 'Affected source file path, when applicable (Section 19.2 example: EOD/cw/CSHB2604.dat).'
+          title: Source File
+      required:
+      - code
+      - severity
+      - message
+      title: QualityIssue
+      type: object
+    ScreenRequest:
+      additionalProperties: false
+      properties:
+        strategy_ids:
+          items:
+            type: string
+          title: Strategy Ids
+          type: array
+        universe_filters:
+          anyOf:
+          - $ref: '#/components/schemas/ScreenUniverseFilters'
+          - type: 'null'
+          default: null
+      required:
+      - strategy_ids
+      title: ScreenRequest
+      type: object
+    ScreenResultItem:
+      additionalProperties: false
+      properties:
+        symbol:
+          title: Symbol
+          type: string
+        score:
+          title: Score
+          type: number
+        rank:
+          title: Rank
+          type: integer
+        passed_criteria:
+          items:
+            type: string
+          title: Passed Criteria
+          type: array
+        failed_criteria:
+          items:
+            type: string
+          title: Failed Criteria
+          type: array
+      required:
+      - symbol
+      - score
+      - rank
+      title: ScreenResultItem
+      type: object
+    ScreenResultsResponse:
+      additionalProperties: false
+      properties:
+        run_id:
+          title: Run Id
+          type: string
+        status:
+          examples:
+          - completed
+          - failed
+          title: Status
+          type: string
+        run_date:
+          description: 'Section 15: ''Store run date, strategy versions, parameters, and data version.'''
+          format: date
+          title: Run Date
+          type: string
+        strategy_versions:
+          additionalProperties:
+            type: string
+          description: Mapping of strategy_id to the version evaluated in this run.
+          title: Strategy Versions
+          type: object
+        parameters:
+          additionalProperties: true
+          description: Effective universe_filters and any per-strategy parameters used for this run.
+          title: Parameters
+          type: object
+        results:
+          items:
+            $ref: '#/components/schemas/ScreenResultItem'
+          title: Results
+          type: array
+        provenance:
+          $ref: '#/components/schemas/Provenance'
+      required:
+      - run_id
+      - status
+      - run_date
+      - strategy_versions
+      - parameters
+      - results
+      - provenance
+      title: ScreenResultsResponse
+      type: object
+    ScreenStartResponse:
+      additionalProperties: false
+      properties:
+        run_id:
+          title: Run Id
+          type: string
+        status:
+          description: 'OPEN ITEM: see contracts/OPEN_ITEMS.md, ''Job/health status vocabulary.'''
+          examples:
+          - queued
+          - running
+          title: Status
+          type: string
+        provenance:
+          $ref: '#/components/schemas/Provenance'
+      required:
+      - run_id
+      - status
+      - provenance
+      title: ScreenStartResponse
+      type: object
+    ScreenUniverseFilters:
+      additionalProperties: false
+      description: Section 15 'Default filters' list.
+      properties:
+        active_equity_only:
+          default: true
+          title: Active Equity Only
+          type: boolean
+        last_positive_volume_within_days:
+          default: 5
+          description: 'Section 15: ''Last positive-volume date within a configurable range.'' OPEN ITEM:
+            the plan does not give a default value; 5 sessions is chosen here to match the terminal zero-volume
+            run length used in Section 19.2''s baseline scan (''terminal zero-volume runs of five or more
+            sessions''). See contracts/OPEN_ITEMS.md.'
+          title: Last Positive Volume Within Days
+          type: integer
+        min_20d_median_trading_value:
+          description: 'Section 15: ''Minimum 20-day median trading value.'''
+          title: Min 20D Median Trading Value
+          type: number
+        min_history_days:
+          description: 'Section 15: ''Minimum history length.'''
+          title: Min History Days
+          type: integer
+        exclude_unresolved_critical_issues:
+          default: true
+          description: 'Section 15: ''No unresolved critical data-quality issue.'''
+          title: Exclude Unresolved Critical Issues
+          type: boolean
+      required:
+      - min_20d_median_trading_value
+      - min_history_days
+      title: ScreenUniverseFilters
+      type: object
+    SecurityMaster:
+      additionalProperties: false
+      properties:
+        symbol:
+          title: Symbol
+          type: string
+        isin:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          description: 'Section 10.2: ''isin, when available.'''
+          title: Isin
+        exchange:
+          description: See OPEN_ITEMS.md; same open-string treatment as PriceBar.exchange.
+          examples:
+          - HOSE
+          - HNX
+          - UPCoM
+          title: Exchange
+          type: string
+        security_type:
+          description: See OPEN_ITEMS.md; same open-string treatment as PriceBar.security_type.
+          examples:
+          - equity
+          title: Security Type
+          type: string
+        company_name:
+          title: Company Name
+          type: string
+        sector:
+          title: Sector
+          type: string
+        industry:
+          title: Industry
+          type: string
+        listing_date:
+          format: date
+          title: Listing Date
+          type: string
+        delisting_date:
+          anyOf:
+          - format: date
+            type: string
+          - type: 'null'
+          default: null
+          description: Section 10.2 lists this field; only populated for delisted securities.
+          title: Delisting Date
+        trading_status:
+          description: 'OPEN ITEM: Section 3.2 mentions distinguishing ''suspended securities, and delisted
+            securities''; WP2 (Section 22) speaks of ''Active/inactive status.'' Whether trading_status
+            is a three-plus-value set (active/suspended/delisted/...) or a two-value active/inactive flag
+            with suspension detail held elsewhere is not settled by the plan. See contracts/OPEN_ITEMS.md.'
+          examples:
+          - active
+          - suspended
+          - delisted
+          title: Trading Status
+          type: string
+        currency:
+          examples:
+          - VND
+          title: Currency
+          type: string
+        price_unit:
+          description: 'Section 3.2: ''OHLC prices appear to be historically adjusted and expressed in
+            thousands of VND.'''
+          examples:
+          - thousand_vnd
+          title: Price Unit
+          type: string
+        lot_size:
+          minimum: 1
+          title: Lot Size
+          type: integer
+        source:
+          title: Source
+          type: string
+        valid_from:
+          format: date
+          title: Valid From
+          type: string
+        valid_to:
+          anyOf:
+          - format: date
+            type: string
+          - type: 'null'
+          default: null
+          title: Valid To
+        index_code:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: null
+          description: Only populated for security_type=index entries sourced from EOD/index, whose 207
+            files are named with numeric codes (for example 0001.dat, 0500.dat) rather than symbols (Section
+            10.2). Not a literal field name from the plan; see contracts/OPEN_ITEMS.md.
+          title: Index Code
+      required:
+      - symbol
+      - exchange
+      - security_type
+      - company_name
+      - sector
+      - industry
+      - listing_date
+      - trading_status
+      - currency
+      - price_unit
+      - lot_size
+      - source
+      - valid_from
+      title: SecurityMaster
+      type: object
+    SettingsResponse:
+      additionalProperties: false
+      properties:
+        settings:
+          additionalProperties: true
+          description: 'OPEN ITEM: Section 12.1/18.2 and WP12 scatter individual settings (model selection,
+            data source, saved layout, ...) without a single enumerated settings object. Typed as an open
+            object. See contracts/OPEN_ITEMS.md.'
+          title: Settings
+          type: object
+        provenance:
+          $ref: '#/components/schemas/Provenance'
+      required:
+      - settings
+      - provenance
+      title: SettingsResponse
+      type: object
+    SettingsUpdateRequest:
+      additionalProperties: false
+      properties:
+        settings:
+          additionalProperties: true
+          title: Settings
+          type: object
+      required:
+      - settings
+      title: SettingsUpdateRequest
+      type: object
+    Severity:
+      description: 'Section 19.2: "Severity levels: Critical, High, Medium, Low.'
+      enum:
+      - critical
+      - high
+      - medium
+      - low
+      title: Severity
+      type: string
+    SnapshotInfo:
+      additionalProperties: false
+      properties:
+        data_version:
+          title: Data Version
+          type: string
+        as_of_date:
+          format: date
+          title: As Of Date
+          type: string
+        promoted_at:
+          format: date-time
+          title: Promoted At
+          type: string
+      required:
+      - data_version
+      - as_of_date
+      - promoted_at
+      title: SnapshotInfo
+      type: object
+    StrategiesResponse:
+      additionalProperties: false
+      properties:
+        strategies:
+          items:
+            $ref: '#/components/schemas/StrategyDefinition'
+          title: Strategies
+          type: array
+        provenance:
+          $ref: '#/components/schemas/Provenance'
+      required:
+      - strategies
+      - provenance
+      title: StrategiesResponse
+      type: object
+    StrategyDefinition:
+      additionalProperties: false
+      properties:
+        strategy_id:
+          title: Strategy Id
+          type: string
+        version:
+          examples:
+          - 1.0.0
+          title: Version
+          type: string
+        title_vi:
+          title: Title Vi
+          type: string
+        title_en:
+          title: Title En
+          type: string
+        category:
+          description: 'OPEN ITEM: examples are machine-readable slugs derived from the Section 13.1 family
+            list, which the plan explicitly calls categories rather than a final catalogue. Left as an
+            open string, not a closed enum. See contracts/OPEN_ITEMS.md.'
+          examples:
+          - trend_following
+          - moving_average_alignment
+          - breakout
+          - momentum
+          - relative_strength
+          - volume_liquidity
+          - mean_reversion
+          - sideways_range
+          - weinstein_stage_analysis
+          - minervini_template
+          - wyckoff_derived
+          - pivot_support_resistance
+          - composite_scorecard
+          title: Category
+          type: string
+        timeframe:
+          description: See Timeframe enum in common.py for the same 1D/1W/1M open item; kept as a plain
+            string here since a strategy's stated timeframe could in principle combine several (e.g. weekly
+            trend filter plus daily trigger), which the plan does not resolve. See contracts/OPEN_ITEMS.md.
+          title: Timeframe
+          type: string
+        required_fields:
+          description: 'Section 10.4: input fields (e.g. price/volume series) the strategy needs.'
+          items:
+            type: string
+          title: Required Fields
+          type: array
+        warmup_bars:
+          minimum: 0
+          title: Warmup Bars
+          type: integer
+        parameter_schema:
+          additionalProperties: true
+          description: 'OPEN ITEM: the plan requires a ''parameter_schema'' field but does not define
+            its structure (e.g. JSON Schema for parameters vs. a simpler name-to-spec mapping). Typed
+            as an open object. See contracts/OPEN_ITEMS.md.'
+          title: Parameter Schema
+          type: object
+        entry_rule:
+          description: 'OPEN ITEM: the plan does not specify whether rule fields are free text, a structured
+            condition tree, or a small DSL. Typed as a string (human-readable specification) here, consistent
+            with docs/strategy_catalogue.md being written in prose by the user per the P7 workflow. See
+            contracts/OPEN_ITEMS.md.'
+          title: Entry Rule
+          type: string
+        exit_rule:
+          title: Exit Rule
+          type: string
+        invalidation_rule:
+          title: Invalidation Rule
+          type: string
+        liquidity_rule:
+          title: Liquidity Rule
+          type: string
+        execution_convention:
+          $ref: '#/components/schemas/ExecutionConvention'
+        evidence_fields:
+          description: 'Section 10.4: fields this strategy must report into the AI fact bundle.'
+          items:
+            type: string
+          title: Evidence Fields
+          type: array
+        reference:
+          description: 'Section 13.3: source of the rule, e.g. an AFL file path, a book citation, or the
+            user''s own judgment.'
+          title: Reference
+          type: string
+      required:
+      - strategy_id
+      - version
+      - title_vi
+      - title_en
+      - category
+      - timeframe
+      - required_fields
+      - warmup_bars
+      - parameter_schema
+      - entry_rule
+      - exit_rule
+      - invalidation_rule
+      - liquidity_rule
+      - execution_convention
+      - evidence_fields
+      - reference
+      title: StrategyDefinition
+      type: object
+    StrategyEvaluateRequest:
+      additionalProperties: false
+      properties:
+        symbol:
+          title: Symbol
+          type: string
+        strategy_ids:
+          items:
+            type: string
+          title: Strategy Ids
+          type: array
+        as_of_date:
+          anyOf:
+          - format: date
+            type: string
+          - type: 'null'
+          default: null
+          description: Defaults to the latest snapshot date when omitted.
+          title: As Of Date
+      required:
+      - symbol
+      - strategy_ids
+      title: StrategyEvaluateRequest
+      type: object
+    StrategyEvaluateResponse:
+      additionalProperties: false
+      properties:
+        results:
+          items:
+            $ref: '#/components/schemas/StrategyEvaluationResult'
+          title: Results
+          type: array
+        provenance:
+          $ref: '#/components/schemas/Provenance'
+      required:
+      - results
+      - provenance
+      title: StrategyEvaluateResponse
+      type: object
+    StrategyEvaluationResult:
+      additionalProperties: false
+      properties:
+        symbol:
+          examples:
+          - FPT
+          title: Symbol
+          type: string
+        as_of_date:
+          format: date
+          title: As Of Date
+          type: string
+        strategy_id:
+          examples:
+          - minervini_trend_template
+          title: Strategy Id
+          type: string
+        strategy_version:
+          examples:
+          - 1.0.0
+          title: Strategy Version
+          type: string
+        signal:
+          description: 'OPEN ITEM: only ''watch'' is evidenced (Section 10.5 example). The plan does not
+            enumerate the full signal vocabulary (for example whether ''buy'', ''sell'', ''hold'' also
+            exist). See contracts/OPEN_ITEMS.md.'
+          examples:
+          - watch
+          title: Signal
+          type: string
+        score:
+          title: Score
+          type: integer
+        max_score:
+          title: Max Score
+          type: integer
+        passed_criteria:
+          items:
+            type: string
+          title: Passed Criteria
+          type: array
+        failed_criteria:
+          items:
+            type: string
+          title: Failed Criteria
+          type: array
+        levels:
+          $ref: '#/components/schemas/Levels'
+        data_version:
+          examples:
+          - fdata-2026-07-30
+          title: Data Version
+          type: string
+        warnings:
+          items:
+            type: string
+          title: Warnings
+          type: array
+      required:
+      - symbol
+      - as_of_date
+      - strategy_id
+      - strategy_version
+      - signal
+      - score
+      - max_score
+      - levels
+      - data_version
+      title: StrategyEvaluationResult
+      type: object
+    StructuredAIResponse:
+      additionalProperties: false
+      properties:
+        summary:
+          title: Summary
+          type: string
+        facts:
+          description: 'Section 18.3: ''facts.'' OPEN ITEM: the plan does not specify whether this is
+            a list of fact-bundle references (ids/paths into the AIFactBundle) or restated fact strings.
+            Modeled as a list of strings. See contracts/OPEN_ITEMS.md.'
+          items:
+            type: string
+          title: Facts
+          type: array
+        base_case:
+          title: Base Case
+          type: string
+        bull_case:
+          title: Bull Case
+          type: string
+        bear_case:
+          title: Bear Case
+          type: string
+        conditions:
+          items:
+            type: string
+          title: Conditions
+          type: array
+        risks:
+          items:
+            type: string
+          title: Risks
+          type: array
+        invalidation:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Invalidation
+        conflicting_evidence:
+          items:
+            type: string
+          title: Conflicting Evidence
+          type: array
+        confidence:
+          description: 'Section 18.4: ''Require a confidence level.'' OPEN ITEM: the plan does not define
+            the scale (qualitative label such as low/medium/high, or a numeric 0-1 score). Left as an
+            open string. See contracts/OPEN_ITEMS.md.'
+          title: Confidence
+          type: string
+        sources:
+          items:
+            type: string
+          title: Sources
+          type: array
+        warnings:
+          items:
+            type: string
+          title: Warnings
+          type: array
+        model:
+          title: Model
+          type: string
+        provider:
+          $ref: '#/components/schemas/AIProviderType'
+        prompt_version:
+          title: Prompt Version
+          type: string
+      required:
+      - summary
+      - facts
+      - base_case
+      - bull_case
+      - bear_case
+      - conditions
+      - risks
+      - invalidation
+      - confidence
+      - model
+      - provider
+      - prompt_version
+      title: StructuredAIResponse
+      type: object
+    SymbolsResponse:
+      additionalProperties: false
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/SecurityMaster'
+          title: Items
+          type: array
+        total:
+          minimum: 0
+          title: Total
+          type: integer
+        provenance:
+          $ref: '#/components/schemas/Provenance'
+      required:
+      - items
+      - total
+      - provenance
+      title: SymbolsResponse
+      type: object
+    Timeframe:
+      description: 'Daily, weekly, monthly per Section 12.1 and Section 12.2.
+
+
+        OPEN ITEM: the plan never gives literal timeframe codes. "1D" appears
+
+        once, as an example value in the Section 10.1 price-bar JSON sample.
+
+        "1W" and "1M" are inferred by this session to cover the weekly and
+
+        monthly views required by Section 12.1/12.2. See contracts/OPEN_ITEMS.md.'
+      enum:
+      - 1D
+      - 1W
+      - 1M
+      title: Timeframe
+      type: string
+    Trade:
+      additionalProperties: false
+      description: 'Section 16: ''Trade list.''
+
+
+        OPEN ITEM: the plan requires trade-list output but does not give a
+
+        per-trade field list. This shape follows standard backtest trade
+
+        records and the fields the plan does specify elsewhere (symbol,
+
+        entry/exit convention, transaction cost, slippage).'
+      properties:
+        symbol:
+          title: Symbol
+          type: string
+        entry_date:
+          format: date
+          title: Entry Date
+          type: string
+        exit_date:
+          anyOf:
+          - format: date
+            type: string
+          - type: 'null'
+          default: null
+          title: Exit Date
+        entry_price:
+          title: Entry Price
+          type: number
+        exit_price:
+          anyOf:
+          - type: number
+          - type: 'null'
+          default: null
+          title: Exit Price
+        quantity:
+          title: Quantity
+          type: number
+        transaction_cost_paid:
+          title: Transaction Cost Paid
+          type: number
+        slippage_paid:
+          title: Slippage Paid
+          type: number
+        pnl:
+          anyOf:
+          - type: number
+          - type: 'null'
+          default: null
+          title: Pnl
+      required:
+      - symbol
+      - entry_date
+      - entry_price
+      - quantity
+      - transaction_cost_paid
+      - slippage_paid
+      title: Trade
+      type: object
+    WatchlistItem:
+      additionalProperties: false
+      description: 'Section 12.4 ''Watchlist'' tab; WP12 deliverable ''Watchlists.''
+
+
+        OPEN ITEM: the plan does not give a Watchlist field list. This is a
+
+        minimal shape covering what Section 12.4/WP12 imply a watchlist needs.
+
+        See contracts/OPEN_ITEMS.md.'
+      properties:
+        id:
+          title: Id
+          type: string
+        name:
+          title: Name
+          type: string
+        symbols:
+          items:
+            type: string
+          title: Symbols
+          type: array
+        created_at:
+          format: date-time
+          title: Created At
+          type: string
+        updated_at:
+          format: date-time
+          title: Updated At
+          type: string
+      required:
+      - id
+      - name
+      - symbols
+      - created_at
+      - updated_at
+      title: WatchlistItem
+      type: object
+    WatchlistResponse:
+      additionalProperties: false
+      properties:
+        watchlist:
+          $ref: '#/components/schemas/WatchlistItem'
+        provenance:
+          $ref: '#/components/schemas/Provenance'
+      required:
+      - watchlist
+      - provenance
+      title: WatchlistResponse
+      type: object
+    WatchlistUpsertRequest:
+      additionalProperties: false
+      properties:
+        name:
+          title: Name
+          type: string
+        symbols:
+          items:
+            type: string
+          title: Symbols
+          type: array
+      required:
+      - name
+      - symbols
+      title: WatchlistUpsertRequest
+      type: object
+    WatchlistsResponse:
+      additionalProperties: false
+      properties:
+        watchlists:
+          items:
+            $ref: '#/components/schemas/WatchlistItem'
+          title: Watchlists
+          type: array
+        provenance:
+          $ref: '#/components/schemas/Provenance'
+      required:
+      - watchlists
+      - provenance
+      title: WatchlistsResponse
+      type: object
+  responses:
+    BadRequest:
+      description: Malformed request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: The requested resource (symbol, run_id, watchlist id) does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ValidationError:
+      description: Request failed schema validation (FastAPI default 422 shape, Section 7).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPValidationError'
+    ServiceUnavailable:
+      description: 'Required data or an AI provider is unavailable, or the latest snapshot failed validation
+        (Section 3.4: ''No trading recommendation is generated when required data is missing or fails
+        validation.'').'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ServerError:
+      description: Unexpected server error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  parameters:
+    SymbolPath:
+      name: symbol
+      in: path
+      required: true
+      schema:
+        type: string
+      example: FPT
+    RunIdPath:
+      name: run_id
+      in: path
+      required: true
+      schema:
+        type: string
+    WatchlistIdPath:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    TimeframeQuery:
+      name: timeframe
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/Timeframe'
+      description: 'Section 12.1/12.2: daily, weekly, or monthly. Defaults to 1D.'
+    StartDateQuery:
+      name: start_date
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date
+    EndDateQuery:
+      name: end_date
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date
+    SymbolSearchQuery:
+      name: q
+      in: query
+      required: false
+      schema:
+        type: string
+      description: 'Section 11: ''Search and filter the security universe.'''
+    ExchangeFilterQuery:
+      name: exchange
+      in: query
+      required: false
+      schema:
+        type: string
+    SecurityTypeFilterQuery:
+      name: security_type
+      in: query
+      required: false
+      schema:
+        type: string
+    TradingStatusFilterQuery:
+      name: trading_status
+      in: query
+      required: false
+      schema:
+        type: string
+    LimitQuery:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 1000
+        default: 100
+      description: 'OPEN ITEM: pagination is not specified by Section 11; added given the full-market
+        universe is 1,500-1,800 securities (Section 3.3). See contracts/OPEN_ITEMS.md.'
+    OffsetQuery:
+      name: offset
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+    IndicatorIdsQuery:
+      name: indicator_ids
+      in: query
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+      style: form
+      explode: true
+      description: Restrict to specific indicator ids from Section 14. Omit for all.
+    AsOfDateQuery:
+      name: as_of_date
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date
+      description: Defaults to the latest promoted snapshot date when omitted.
