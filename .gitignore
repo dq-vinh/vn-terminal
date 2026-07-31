@@ -22,3 +22,9 @@ data/quality_reports/*
 !data/quality_reports/.gitkeep
 
 # FData source is external and read-only; never vendored into the repo.
+
+# Test scratch and tool caches
+.pytest_tmp/
+test-results/
+.ruff_cache/
+.mypy_cache/

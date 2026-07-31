@@ -544,13 +544,13 @@ components:
           title: Data Quality
           type: object
         sources:
-          description: 'Section 10.6: ''Source URLs...'' — modeled as a list of URL strings.'
+          description: 'Section 10.6: ''Source URLs...'', modeled as a list of URL strings.'
           items:
             type: string
           title: Sources
           type: array
         calculation_definitions:
-          description: 'Section 10.6: ''...and calculation definitions.'' — modeled as a list of human-readable
+          description: 'Section 10.6: ''...and calculation definitions.'', modeled as a list of human-readable
             definition strings, matching the per-indicator documentation required by Section 14 (formula,
             input price, adjustment convention, warm-up period, missing-value behavior, comparison reference,
             numerical tolerance).'

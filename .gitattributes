@@ -1,0 +1,5 @@
+# Normalize line endings so fixture hashes are stable across machines.
+* text=auto eol=lf
+*.png binary
+*.parquet binary
+*.dat binary

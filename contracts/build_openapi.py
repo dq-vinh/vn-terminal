@@ -45,7 +45,7 @@ sys.path.insert(0, str(THIS_DIR / "schemas"))
 
 from models.registry import EXPORTS  # noqa: E402
 
-CONTRACT_VERSION = (THIS_DIR / "VERSION").read_text().strip()
+CONTRACT_VERSION = (THIS_DIR / "VERSION").read_text(encoding="utf-8").strip()
 
 
 def ref(model) -> dict:

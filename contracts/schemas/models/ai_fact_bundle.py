@@ -80,12 +80,12 @@ class AIFactBundle(StrictModel):
     )
     sources: list[str] = Field(
         default_factory=list,
-        description="Section 10.6: 'Source URLs...' — modeled as a list of URL strings.",
+        description="Section 10.6: 'Source URLs...', modeled as a list of URL strings.",
     )
     calculation_definitions: list[str] = Field(
         default_factory=list,
         description=(
-            "Section 10.6: '...and calculation definitions.' — modeled as "
+            "Section 10.6: '...and calculation definitions.', modeled as "
             "a list of human-readable definition strings, matching the "
             "per-indicator documentation required by Section 14 (formula, "
             "input price, adjustment convention, warm-up period, "

@@ -48,7 +48,7 @@ from models.strategy_definition import StrategyDefinition  # noqa: E402
 from models.strategy_evaluation_result import StrategyEvaluationResult  # noqa: E402
 
 OUT_DIR = THIS_DIR
-CONTRACT_VERSION = (REPO_ROOT / "contracts" / "VERSION").read_text().strip()
+CONTRACT_VERSION = (REPO_ROOT / "contracts" / "VERSION").read_text(encoding="utf-8").strip()
 DATA_VERSION = "fdata-2026-07-30"
 AS_OF_DATE = date(2026, 7, 30)
 INGESTED_AT = datetime(2026, 7, 30, 21, 30, 0, tzinfo=timezone(timedelta(hours=7)))
@@ -497,7 +497,7 @@ def main() -> None:
 
     for name, payload in files.items():
         out_path = OUT_DIR / name
-        out_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n")
+        out_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         print(f"Wrote {name} ({len(json.dumps(payload))} bytes)")
 
     assert len(fpt_bars["bars"]) >= 500

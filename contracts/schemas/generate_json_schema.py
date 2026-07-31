@@ -27,7 +27,7 @@ OUT_DIR = THIS_DIR / "json"
 
 def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    contract_version = (REPO_ROOT / "contracts" / "VERSION").read_text().strip()
+    contract_version = (REPO_ROOT / "contracts" / "VERSION").read_text(encoding="utf-8").strip()
 
     written = []
     for name, model in EXPORTS.items():
@@ -39,7 +39,7 @@ def main() -> None:
             **schema,
         }
         out_path = OUT_DIR / f"{name}.schema.json"
-        out_path.write_text(json.dumps(schema, indent=2, ensure_ascii=False) + "\n")
+        out_path.write_text(json.dumps(schema, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         written.append(out_path.name)
 
     print(f"Wrote {len(written)} schema files to {OUT_DIR}")
