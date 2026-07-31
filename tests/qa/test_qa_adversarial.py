@@ -195,14 +195,35 @@ def test_ai_validation_module_missing():
 # Area 6: Reproducibility
 # ---------------------------------------------------------------------------
 
-def test_quant_golden_fixtures_hash_divergence():
-    """Verify divergence between bars_FPT fixture and stored golden test hash."""
+def test_quant_golden_fixtures_hash_agreement():
+    """The bars_FPT fixture must still hash to the stored golden baseline.
+
+    History. This test was originally written inverted, asserting that the
+    hashes *diverged*, because at the time they did. The divergence was not a
+    quant defect but a line-ending one: the generators called write_text()
+    without newline="\\n", so on Windows they emitted CRLF while the committed
+    fixtures were LF. Fixed on 31 July 2026 by pinning newline="\\n" in
+    contracts/schemas/generate_json_schema.py, contracts/fixtures/
+    generate_fixtures.py, and contracts/build_openapi.py, plus a .gitattributes
+    enforcing eol=lf.
+
+    The assertion is now the correct-state one. If it fails, either a fixture
+    was regenerated without refreshing the golden baseline, or platform line
+    endings have drifted again.
+    """
     golden_path = REPO_ROOT / "tests" / "quant" / "golden" / "indicators_FPT.json"
     bars_path = REPO_ROOT / "contracts" / "fixtures" / "bars_FPT.json"
 
     if golden_path.exists() and bars_path.exists():
         golden = json.loads(golden_path.read_text(encoding="utf-8"))
-        actual_hash = hashlib.sha256(bars_path.read_bytes()).hexdigest()
-        assert actual_hash != golden["source_sha256"], (
-            "DEFECT VERIFIED: bars_FPT.json fixture hash has diverged from stored golden baseline."
+        raw = bars_path.read_bytes()
+        assert b"\r\n" not in raw, (
+            "bars_FPT.json contains CRLF. Generated artifacts must be LF only; "
+            'check that the generators still pass newline="\\n".'
+        )
+        actual_hash = hashlib.sha256(raw).hexdigest()
+        assert actual_hash == golden["source_sha256"], (
+            "bars_FPT.json no longer hashes to the golden baseline. Regenerate "
+            "the golden files only after confirming the fixture change was "
+            "intended and test_indicator_math.py still passes."
         )

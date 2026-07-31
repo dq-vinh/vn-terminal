@@ -39,7 +39,7 @@ def main() -> None:
             **schema,
         }
         out_path = OUT_DIR / f"{name}.schema.json"
-        out_path.write_text(json.dumps(schema, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        out_path.write_text(json.dumps(schema, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
         written.append(out_path.name)
 
     print(f"Wrote {len(written)} schema files to {OUT_DIR}")

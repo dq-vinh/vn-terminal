@@ -538,7 +538,7 @@ def main() -> None:
         "# Any change here that is not a same-session fix is a contract "
         "change; follow contracts/OWNERSHIP.md Section 24.2.\n"
     )
-    with out_path.open("w", encoding="utf-8") as f:
+    with out_path.open("w", encoding="utf-8", newline="\n") as f:
         f.write(header)
         yaml.dump(
             doc, f, Dumper=NoAliasDumper, sort_keys=False, allow_unicode=True, width=100

@@ -497,7 +497,7 @@ def main() -> None:
 
     for name, payload in files.items():
         out_path = OUT_DIR / name
-        out_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        out_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
         print(f"Wrote {name} ({len(json.dumps(payload))} bytes)")
 
     assert len(fpt_bars["bars"]) >= 500

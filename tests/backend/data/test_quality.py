@@ -129,20 +129,43 @@ def test_historical_revisions_compare_only_overlapping_dates(
     assert revisions == (20260729,)
 
 
-def test_live_repository_reproduces_30_july_baseline_when_available():
+def test_live_repository_is_consistent_with_30_july_baseline_when_available():
+    """Sanity-check the live FData repository against the 30 July 2026 baseline.
+
+    The baseline figures were measured on 30 July 2026 (see Section 19.2 of the
+    development plan). FData appends a new session most trading days, so exact
+    equality is the wrong assertion. It held for one day and then failed, which
+    is what prompted this rewrite on 31 July 2026.
+
+    The assertions below separate quantities that must only grow, quantities
+    that are structurally fixed, and quantities that are informational. A
+    failure here means either genuine corruption or a parser regression, not
+    ordinary data arrival.
+    """
     source_root = Path(r"C:\FDATA\AmiBroker\EOD")
     if not source_root.exists():
         pytest.skip("Live FData repository is not installed")
 
-    summary = scan_repository(
-        source_root, reference_date=date(2026, 7, 30)
-    )
+    summary = scan_repository(source_root, reference_date=date(2026, 7, 30))
 
-    assert summary.file_count == 2_471
-    assert summary.record_count == 3_632_818
-    assert summary.ohlc_violation_files == 505
-    assert summary.nonpositive_price_files == 34
-    assert summary.zero_volume_records == 11_020
-    assert summary.terminal_zero_volume_stock_files == 301
-    assert summary.current_files == 2_315
+    # Monotonic. The vendor appends bars and may list new securities; it must
+    # never retract history.
+    assert summary.file_count >= 2_471
+    assert summary.record_count >= 3_632_818
+    assert summary.terminal_zero_volume_stock_files >= 301
+
+    # Structural. One known malformed file, EOD/cw/CSHB2604.dat, whose header
+    # claims 43 records against 44 actual with one out-of-order date. A change
+    # here means a new corruption or a parser regression.
     assert summary.malformed_files == 1
+
+    # Bounded drift. These track data-quality defects in the vendor feed. Slow
+    # growth is expected; a jump means investigate before trusting a refresh.
+    assert 505 <= summary.ohlc_violation_files <= 560
+    assert 34 <= summary.nonpositive_price_files <= 60
+    assert 11_020 <= summary.zero_volume_records <= 13_000
+
+    # Freshness. current_files counts securities whose last bar equals the
+    # reference date, so it necessarily falls as the repository moves past
+    # 30 July. Only assert that most of the universe was current that day.
+    assert summary.current_files >= 2_200
