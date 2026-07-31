@@ -63,8 +63,14 @@ class UniverseFilters:
     min_20d_median_trading_value: float = 0.0
     min_history_days: int = 0
     exclude_unresolved_critical_issues: bool = True
-    accepted_exchanges: frozenset[str] = frozenset({"HOSE", "HNX", "UPCOM"})
-    accepted_security_types: frozenset[str] = frozenset({"ordinary_equity"})
+    # "UPCoM" and "equity" are the frozen canonical contract's enumeration
+    # values (contracts/schemas/models/security_master.py, price_bar.py).
+    # "UPCOM"/"ordinary_equity" matched nothing the data layer emits and made
+    # this filter exclude every security with no error; see
+    # docs/strategy_catalogue.md section 1, "Adopt the contract enumerations
+    # equity and UPCoM" in the specification decision log.
+    accepted_exchanges: frozenset[str] = frozenset({"HOSE", "HNX", "UPCoM"})
+    accepted_security_types: frozenset[str] = frozenset({"equity"})
     accepted_trading_statuses: frozenset[str] = frozenset({"active"})
     trading_value_unit: str = "thousand_vnd_times_shares"
 

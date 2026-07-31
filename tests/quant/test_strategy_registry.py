@@ -85,7 +85,7 @@ def test_an_unknown_strategy_id_names_the_known_ones():
 
 
 def test_versions_map_is_reported_for_run_records():
-    assert registry.versions() == {"dual_sma_trend_crossover": "1.0.0"}
+    assert registry.versions() == {"dual_sma_trend_crossover": "1.1.0"}
 
 
 # ------------------------------------------------------------- Section 10.4

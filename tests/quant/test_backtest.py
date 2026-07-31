@@ -344,7 +344,7 @@ def test_trade_list_equity_curve_and_drawdown_curve_are_produced():
 
 def test_data_and_strategy_versions_travel_with_the_result():
     report = summarize(go(), config())
-    assert report["strategy_version"] == "1.0.0"
+    assert report["strategy_version"] == "1.1.0"
     assert report["data_version"] == "fdata-2026-07-30"
     assert report["config"]["strategy_id"] == STRATEGY
 

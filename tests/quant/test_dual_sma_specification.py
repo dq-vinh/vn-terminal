@@ -65,12 +65,14 @@ def _reference_sma(closes, period, end_index):
 
 
 def test_defaults_match_the_approved_parameter_table():
-    """"fast_period 20, slow_period 50, min_avg_volume_20 200,000"."""
+    """"fast_period 20, slow_period 50, min_avg_volume_20 200,000,
+    halt_exit_sessions 5"."""
 
     assert resolve_parameters(STRATEGY) == {
         "fast_period": 20,
         "slow_period": 50,
         "min_avg_volume_20": 200_000,
+        "halt_exit_sessions": 5,
     }
 
 
@@ -303,18 +305,18 @@ def test_a_non_positive_close_is_never_imputed():
 # ------------------------------------------------------------ universe gate
 
 
-def test_universe_gate_requires_an_active_ordinary_equity():
+def test_universe_gate_requires_an_active_equity():
     from backend.app.quant.strategies import SecurityView
 
     closes = crossover_closes(count=120)
     history = make_history(closes=closes)
     day = history.trading_dates[119]
     for exchange, kind, status, expected in [
-        ("HOSE", "ordinary_equity", "active", True),
-        ("UPCOM", "ordinary_equity", "active", True),
-        ("UNKNOWN", "ordinary_equity", "active", False),
+        ("HOSE", "equity", "active", True),
+        ("UPCoM", "equity", "active", True),
+        ("UNKNOWN", "equity", "active", False),
         ("HOSE", "warrant", "active", False),
-        ("HOSE", "ordinary_equity", "suspended", False),
+        ("HOSE", "equity", "suspended", False),
         ("HOSE", "unknown", "unknown", False),
     ]:
         result = evaluate(
@@ -346,7 +348,7 @@ def test_a_stale_classification_is_flagged():
         STRATEGY,
         history.window(119),
         security=SecurityView(
-            "TEST", history.trading_dates[0], "HOSE", "ordinary_equity", "active"
+            "TEST", history.trading_dates[0], "HOSE", "equity", "active"
         ),
         position_state=PositionState.FLAT,
     )

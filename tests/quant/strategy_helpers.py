@@ -17,8 +17,12 @@ vacuously.
 from __future__ import annotations
 
 import math
+import subprocess
+import sys
+import types
 from collections.abc import Sequence
 from datetime import date, timedelta
+from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -26,6 +30,12 @@ import numpy as np
 from backend.app.quant.strategies import SecurityView, SymbolHistory
 
 START = date(2024, 1, 1)
+REPO_ROOT = Path(__file__).resolve().parents[2]
+#: The commit tagged before the halt_exit_rule / enumeration fix (Blockers 2
+#: and 3 in docs/pre_integration_fixes.md), used as the "version 1.0.0"
+#: baseline for the FPT regression test.
+BASELINE_REF = "pre-integration-baseline"
+BASELINE_STRATEGY_PATH = "backend/app/quant/strategies/dual_sma_trend_crossover.py"
 
 
 def sessions(count: int, start: date = START) -> tuple[date, ...]:
@@ -104,7 +114,7 @@ def active_equity(symbol: str = "TEST") -> Any:
             symbol=requested,
             as_of_date=day,
             exchange="HOSE",
-            security_type="ordinary_equity",
+            security_type="equity",
             trading_status="active",
         )
 
@@ -116,7 +126,7 @@ def security_view(symbol: str, day: date) -> SecurityView:
         symbol=symbol,
         as_of_date=day,
         exchange="HOSE",
-        security_type="ordinary_equity",
+        security_type="equity",
         trading_status="active",
     )
 
@@ -278,3 +288,46 @@ def comparable(evaluation: Any) -> dict[str, Any]:
         },
         "order": None if evaluation.order is None else evaluation.order.reason,
     }
+
+
+def load_baseline_dual_sma_v1_0_0() -> Any:
+    """The pre-`halt_exit_rule` strategy instance, for the FPT regression test.
+
+    Loads `dual_sma_trend_crossover.py` as it was at `BASELINE_REF` (tagged
+    before Blockers 2 and 3 in docs/pre_integration_fixes.md were fixed) and
+    instantiates its `DualSmaTrendCrossover` class directly, bypassing the
+    shared registry so it never collides with the currently-registered 1.1.0
+    strategy. This is what makes "unchanged between version 1.0.0 and 1.1.0"
+    a real comparison instead of an assertion against a hand-copied literal
+    that could drift from what 1.0.0 actually did.
+
+    The old source still imports `from . import numerics` and
+    `from .protocol import ...` etc; those resolve against the *current*
+    package, which is fine here because none of those modules changed in a
+    way that breaks the old file (the new fields they carry are all
+    additive, defaulted keyword arguments).
+    """
+
+    source = subprocess.run(
+        ["git", "show", f"{BASELINE_REF}:{BASELINE_STRATEGY_PATH}"],
+        cwd=REPO_ROOT,
+        check=True,
+        capture_output=True,
+        encoding="utf-8",
+    ).stdout
+    source = source.replace(
+        "STRATEGY = register(DualSmaTrendCrossover())",
+        "STRATEGY = DualSmaTrendCrossover()",
+    )
+
+    module_name = "backend.app.quant.strategies._baseline_v1_0_0_for_regression_test"
+    module = types.ModuleType(module_name)
+    module.__package__ = "backend.app.quant.strategies"
+    sys.modules[module_name] = module
+    try:
+        code = compile(source, f"{BASELINE_REF}:{BASELINE_STRATEGY_PATH}", "exec")
+        exec(code, module.__dict__)  # noqa: S102 - trusted, this repo's own git history
+    finally:
+        del sys.modules[module_name]
+    assert module.STRATEGY.metadata.version == "1.0.0"
+    return module.STRATEGY

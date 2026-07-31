@@ -219,8 +219,26 @@ class Strategy(Protocol):
         security: SecurityView | None,
         position_state: PositionState,
         parameters: Mapping[str, Any],
+        exit_pending: bool = False,
+        entry_price: float | None = None,
     ) -> StrategyEvaluation:
-        """Evaluate one completed bar."""
+        """Evaluate one completed bar.
+
+        `exit_pending` and `entry_price` are caller-owned facts about the
+        strategy's own open position, added at specification version 1.1.0
+        for `halt_exit_rule`. The strategy tracks no book of its own; the
+        caller (the screener, always flat, or the backtester, with simulated
+        state) is the only place either fact can come from.
+
+        `exit_pending` is whether an exit order the caller scheduled on an
+        earlier bar has not yet executed, so the strategy can honor the
+        "Order semantics while an exit is pending" subsection (no duplicate
+        exit order; a suppressed bullish crossover is reported, not dropped).
+
+        `entry_price` is the position's fill price, used only as the
+        documented fallback fill for a halt exit when no positive-volume row
+        exists anywhere in the available history.
+        """
 
 
 def required_field_names(metadata: StrategyMetadata) -> Sequence[str]:

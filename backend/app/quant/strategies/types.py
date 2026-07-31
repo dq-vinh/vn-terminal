@@ -63,18 +63,23 @@ class Signal(str, Enum):
     """Signal vocabulary.
 
     OPEN ITEM in `contracts/OPEN_ITEMS.md` records that the plan evidences
-    only `watch` for `StrategyEvaluationResult.signal`. These five values are
+    only `watch` for `StrategyEvaluationResult.signal`. These values are
     not invented here: they are taken verbatim from the "Signal
     classification" table of the approved `dual_sma_trend_crossover`
     specification in `docs/strategy_catalogue.md`. A strategy whose approved
     specification defines a different vocabulary would need its own type and
     a contract-change proposal; see `HANDOFF_WP6_WP7_WP8.md`.
+
+    `HALT_EXIT` was added at specification version 1.1.0. It takes precedence
+    over every other value while long, per the revised "Signal
+    classification" table.
     """
 
     UNAVAILABLE = "unavailable"
     ENTRY = "entry"
     ENTRY_BLOCKED = "entry_blocked"
     EXIT = "exit"
+    HALT_EXIT = "halt_exit"
     NONE = "none"
 
 
@@ -469,9 +474,18 @@ class Criterion:
 class OrderIntent:
     """An order a strategy scheduled at `t`, for a caller to execute later.
 
-    Carries no price. The strategy does not know, and must not know, the
-    price at which the order will fill; supplying one here would be exactly
-    the look-ahead the design is built to prevent.
+    Carries no price for a normal, scheduled order. The strategy does not
+    know, and must not know, the price at which such an order will fill;
+    supplying one here would be exactly the look-ahead the design is built to
+    prevent.
+
+    `immediate` is the one deliberate exception, added for `halt_exit_rule`
+    at specification version 1.1.0. A halt exit does not wait for a future
+    bar: per the specification, "by construction no executable next bar
+    exists", so its fill price is the close of a row already at or before
+    `t`, or the entry price as a documented fallback. Both are already-known
+    information, not a look-ahead, so `fill_price`/`fill_date` are populated
+    only when `immediate` is true.
     """
 
     symbol: str
@@ -480,6 +494,9 @@ class OrderIntent:
     execution_convention: str
     reason: str
     full_exit: bool = False
+    immediate: bool = False
+    fill_price: float | None = None
+    fill_date: date | None = None
 
 
 @dataclass(frozen=True, slots=True)

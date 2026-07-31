@@ -730,6 +730,13 @@ class BacktestEngine:
             traded_notional.append(session_notional)
 
             # ----------------------------------------------------- 3. decide
+            # `exit_pending_symbols` is a snapshot of what is still
+            # outstanding after phase 1 ran for this session; it is what lets
+            # the strategy honor "Order semantics while an exit is pending"
+            # (no duplicate exit order; a suppressed bullish crossover is
+            # reported rather than silently dropped) without tracking any
+            # book of its own.
+            exit_pending_symbols = {order.intent.symbol for order in pending if order.is_exit}
             for symbol in self.histories:
                 index = session_index[symbol].get(day)
                 if index is None:
@@ -740,17 +747,104 @@ class BacktestEngine:
                     if self.security_resolver is not None
                     else None
                 )
+                position = positions.get(symbol)
                 evaluation = strategy_registry.evaluate(
                     config.strategy_id,
                     window,
                     security=security,
                     position_state=(
-                        PositionState.LONG if symbol in positions else PositionState.FLAT
+                        PositionState.LONG if position is not None else PositionState.FLAT
                     ),
                     parameters=self.parameters,
+                    exit_pending=symbol in exit_pending_symbols,
+                    entry_price=position.entry_price if position is not None else None,
                 )
                 evaluations.append(evaluation)
                 note_read(symbol, window.highest_index_read)
+                if evaluation.order is not None and evaluation.order.immediate:
+                    # `halt_exit_rule` (specification version 1.1.0): the fill
+                    # price is already known (a row at or before today, or the
+                    # entry price), so this executes now rather than being
+                    # scheduled for a future bar. It supersedes any order this
+                    # symbol still has outstanding.
+                    assert evaluation.order.fill_price is not None
+                    assert evaluation.order.fill_date is not None
+                    fill_price = evaluation.order.fill_price
+                    fill_date = evaluation.order.fill_date
+                    still_outstanding = [
+                        order for order in pending if order.intent.symbol == symbol
+                    ]
+                    if still_outstanding:
+                        pending = [
+                            order for order in pending if order.intent.symbol != symbol
+                        ]
+                        for order in still_outstanding:
+                            events.append(
+                                OrderEvent(
+                                    day,
+                                    symbol,
+                                    order.intent.side.value,
+                                    OrderStatus.CANCELLED.value,
+                                    "superseded by a halt exit",
+                                    order.intent.decision_date,
+                                )
+                            )
+                    if position is not None:
+                        notional = fill_price * position.quantity
+                        cost = notional * config.transaction_cost_rate
+                        cash += notional - cost
+                        session_notional += notional
+                        fills.append(
+                            Fill(
+                                symbol,
+                                "sell",
+                                day,
+                                fill_price,
+                                fill_price,
+                                position.quantity,
+                                notional,
+                                cost,
+                                0.0,
+                                "immediate_last_trade",
+                                evaluation.order.reason,
+                            )
+                        )
+                        gross = (fill_price - position.entry_price) * position.quantity
+                        total_costs = position.entry_costs + cost
+                        invested = position.entry_price * position.quantity
+                        trades.append(
+                            Trade(
+                                symbol=symbol,
+                                entry_date=position.entry_date,
+                                entry_price=position.entry_price,
+                                exit_date=day,
+                                exit_price=fill_price,
+                                quantity=position.quantity,
+                                gross_pnl=gross,
+                                costs=total_costs,
+                                net_pnl=gross - cost,
+                                return_pct=(gross - cost) / invested if invested else 0.0,
+                                holding_sessions=session - position.entry_session,
+                                entry_reason=position.entry_reason,
+                                exit_reason=evaluation.order.reason,
+                                transaction_cost_paid=total_costs,
+                                slippage_paid=position.entry_slippage,
+                            )
+                        )
+                        del positions[symbol]
+                        events.append(
+                            OrderEvent(
+                                day,
+                                symbol,
+                                "sell",
+                                OrderStatus.EXECUTED.value,
+                                f"halt exit filled {position.quantity} at "
+                                f"{fill_price:.6f} (row dated "
+                                f"{fill_date.isoformat()})",
+                                evaluation.order.decision_date,
+                            )
+                        )
+                    continue
                 if evaluation.order is not None:
                     convention = (
                         config.entry_convention

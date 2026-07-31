@@ -66,7 +66,7 @@ def candidate(
         history=history,
         security=(
             SecurityView(
-                symbol, history.trading_dates[-1], "HOSE", "ordinary_equity", "active"
+                symbol, history.trading_dates[-1], "HOSE", "equity", "active"
             )
             if active
             else SecurityView(symbol, history.trading_dates[-1], "UNKNOWN", "unknown", "unknown")
@@ -266,7 +266,7 @@ def test_run_id_changes_when_the_data_version_changes():
 def test_the_run_record_stores_everything_section_15_requires():
     result = run([candidate("AAA")])
     assert result.run_date == candidate("AAA").history.trading_dates[-1]
-    assert result.strategy_versions == {STRATEGY: "1.0.0"}
+    assert result.strategy_versions == {STRATEGY: "1.1.0"}
     assert result.data_version == "fdata-2026-07-30"
     assert result.parameters["strategy_parameters"][STRATEGY]["fast_period"] == 20
     assert result.parameters["universe_filters"]["min_history_days"] == 60
@@ -294,7 +294,7 @@ def test_compute_run_id_is_stable_across_processes():
         "data_version": "v1",
         "filters": UniverseFilters(),
         "strategy_parameters": {STRATEGY: {"fast_period": 20, "slow_period": 50}},
-        "strategy_versions": {STRATEGY: "1.0.0"},
+        "strategy_versions": {STRATEGY: "1.1.0"},
         "symbols": ["BBB", "AAA"],
     }
     shuffled = dict(kwargs)

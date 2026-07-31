@@ -136,6 +136,13 @@ def evaluation_payload(evaluation: StrategyEvaluation) -> dict[str, Any]:
                 "execution_convention": evaluation.order.execution_convention,
                 "reason": evaluation.order.reason,
                 "full_exit": evaluation.order.full_exit,
+                "immediate": evaluation.order.immediate,
+                "fill_price": evaluation.order.fill_price,
+                "fill_date": (
+                    evaluation.order.fill_date.isoformat()
+                    if evaluation.order.fill_date is not None
+                    else None
+                ),
             }
         ),
         "order_status": evaluation.order_status.value,

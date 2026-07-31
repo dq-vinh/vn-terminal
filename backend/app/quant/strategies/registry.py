@@ -142,11 +142,14 @@ def evaluate(
     security: SecurityView | None = None,
     position_state: PositionState = PositionState.FLAT,
     parameters: Mapping[str, Any] | None = None,
+    exit_pending: bool = False,
+    entry_price: float | None = None,
 ) -> StrategyEvaluation:
     """Run one registered strategy against one as-of window.
 
     Parameters are validated before the strategy sees them, so a rule never
-    has to defend itself against an out-of-range period.
+    has to defend itself against an out-of-range period. `exit_pending` and
+    `entry_price` are caller-owned position facts; see `Strategy.evaluate`.
     """
 
     entry = get(strategy_id)
@@ -156,6 +159,8 @@ def evaluate(
         security=security,
         position_state=position_state,
         parameters=resolved,
+        exit_pending=exit_pending,
+        entry_price=entry_price,
     )
     if result.strategy_id != strategy_id:
         raise StrategyError(
